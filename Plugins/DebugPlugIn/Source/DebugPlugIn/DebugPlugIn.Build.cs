@@ -16,7 +16,7 @@ public class DebugPlugIn : ModuleRules
 		PrivateDependencyModuleNames.Add("Engine");
 		PrivateDependencyModuleNames.Add("Slate");
 		PrivateDependencyModuleNames.Add("SlateCore");
-		PrivateDependencyModuleNames.Add("BODYCREDIT");
+		PrivateDependencyModuleNames.Add("BODYCREDIT_v2");
 		PrivateDependencyModuleNames.Add("GameplayDebugger");
 	}
 }
