@@ -1,12 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/CBaseComponent.h"
 #include "CNox_FSMComp.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BODYCREDIT_V2_API UCNox_FSMComp : public UActorComponent
+class BODYCREDIT_V2_API UCNox_FSMComp : public UCBaseComponent
 {
 	GENERATED_BODY()
 
