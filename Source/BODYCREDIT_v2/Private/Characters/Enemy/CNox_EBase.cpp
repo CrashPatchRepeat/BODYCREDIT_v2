@@ -27,27 +27,27 @@ void ACNox_EBase::Tick(float DeltaTime)
 
 	// TODO FSMComp, StatusComp 기능 만들고 주석 해제
 	
-	// if (FSMComp && !bExtractSucceed) FSMComp->UpdateState();
-	//
-	// if (bDebug)
-	// {
-	// 	if (FSMComp) // Print Current State
-	// 	{
-	// 		FString myState = UEnum::GetValueOrBitfieldAsString(FSMComp->GetEnemyState());
-	// 		DrawDebugString(GetWorld(), GetActorLocation(), myState, nullptr, FColor::Yellow, 0);
-	// 		myState = UEnum::GetValueOrBitfieldAsString(FSMComp->GetCombatState());
-	// 		DrawDebugString(
-	// 			GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
-	// 								GetActorLocation().Z - 50), myState, nullptr, FColor::Yellow, 0);
-	// 	}
-	// 	if (StatusComp)
-	// 	{
-	// 		FString myHP = FString::Printf(TEXT("%.2f"), StatusComp->GetHealthPercent());
-	// 		DrawDebugString(
-	// 			GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
-	// 								GetActorLocation().Z - 100), myHP, nullptr, FColor::Red, 0);
-	// 	}
-	// }
+	if (FSMComp && !bExtractSucceed) FSMComp->UpdateState();
+	
+	if (bDebug)
+	{
+		if (FSMComp) // Print Current State
+		{
+			FString myState = UEnum::GetValueOrBitfieldAsString(FSMComp->GetEnemyState());
+			DrawDebugString(GetWorld(), GetActorLocation(), myState, nullptr, FColor::Yellow, 0);
+			myState = UEnum::GetValueOrBitfieldAsString(FSMComp->GetCombatState());
+			DrawDebugString(
+				GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
+									GetActorLocation().Z - 50), myState, nullptr, FColor::Yellow, 0);
+		}
+		// if (StatusComp)
+		// {
+		// 	FString myHP = FString::Printf(TEXT("%.2f"), StatusComp->GetHealthPercent());
+		// 	DrawDebugString(
+		// 		GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
+		// 							GetActorLocation().Z - 100), myHP, nullptr, FColor::Red, 0);
+		// }
+	}
 }
 
 void ACNox_EBase::PossessedBy(AController* NewController)
@@ -103,9 +103,9 @@ void ACNox_EBase::SetTarget(ACNox* InTarget)
 	// TODO FSMComp, StatusComp 기능 만들고 주석 해제
 	
 	// if (StatusComp->GetHealthPercent() <= FLT_MIN) return;
-	//
-	// Target = InTarget;
-	// Target ? FSMComp->SetEnemyState(EEnemyState::Sense) : FSMComp->SetEnemyState(EEnemyState::IDLE);
+	
+	Target = InTarget;
+	Target ? FSMComp->SetEnemyState(EEnemyState::Sense) : FSMComp->SetEnemyState(EEnemyState::IDLE);
 }
 #pragma endregion
 
@@ -150,8 +150,7 @@ bool ACNox_EBase::IsHitting()
 
 void ACNox_EBase::ResetVal() const
 {
-	// TODO: 값 초기화 구현
-	// FSMComp->ResetVal(EnemyType);
+	FSMComp->ResetVal(EnemyType);
 }
 #pragma endregion
 
@@ -230,35 +229,29 @@ bool ACNox_EBase::IsPlayerInForwardDegree(const float InForwardRange, const floa
 #pragma region FSM Set State
 void ACNox_EBase::SetEnemyState(EEnemyState NewState)
 {
-	// TODO: FSM 상태 변경 구현
-	// FSMComp->SetEnemyState(NewState);
+	FSMComp->SetEnemyState(NewState);
 }
 
 void ACNox_EBase::SetCombatState(ECombatState NewCombatState)
 {
-	// TODO: 전투 상태 변경 구현
-	// FSMComp->SetCombatState(NewCombatState);
+	FSMComp->SetCombatState(NewCombatState);
 }
 #pragma endregion
 
 #pragma region FSM Skill Cool Downs
 void ACNox_EBase::UpdateSkillCoolDowns(ESkillCoolDown Skill, float DeltaTime)
 {
-	// TODO: 스킬 쿨타임 갱신 구현
-	// FSMComp->UpdateSkillCoolDowns(Skill, DeltaTime);
+	FSMComp->UpdateSkillCoolDowns(Skill, DeltaTime);
 }
 
 bool ACNox_EBase::IsSkillReady(ESkillCoolDown Skill) const
 {
-	// TODO: 스킬 사용 가능 여부 반환
-	return false;
-	// return FSMComp->IsSkillReady(Skill);
+	return FSMComp->IsSkillReady(Skill);
 }
 
 void ACNox_EBase::UsingSkill(ESkillCoolDown Skill)
 {
-	// TODO: 스킬 사용 처리 구현
-	// FSMComp->UsingSkill(Skill);
+	FSMComp->UsingSkill(Skill);
 }
 #pragma endregion
 
