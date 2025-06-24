@@ -42,6 +42,7 @@ private:
 	UInputMappingContext* IMC_Runner;
 
 	void InitCameraAndSpringArm();
+	void InitCharacterMeshes();
 	void InitCharacterMovement();
 	void InitCustomComponents();
 	void InitMappingContexts();
