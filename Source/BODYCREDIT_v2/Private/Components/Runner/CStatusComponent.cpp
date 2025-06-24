@@ -13,12 +13,12 @@ void UCStatusComponent::TakeDamage(const float Amount)
 {
 	if (OwnerCharacter && OwnerCharacter->IsA(ACNox_Runner::StaticClass()))
 	{
-		// TODO UCStateComponent 추가되면 주석 해제
-		// if (CHelpers::GetComponent<UCStateComponent>(OwnerCharacter))
-		// {
-		// 	if (CHelpers::GetComponent<UCStateComponent>(OwnerCharacter)->IsAvoidMode())
-		// 		return;
-		// }
+		if (CHelpers::GetComponent<UCStatusComponent>(OwnerCharacter))
+		{
+			// TODO 플레이어 Enum 추가되면 주석 해제
+			// if (CHelpers::GetComponent<UCStatusComponent>(OwnerCharacter)->IsAvoidMode())
+			// 	return;
+		}
 	}
 
 	Health = FMath::Max(0.f, Health - Amount);
