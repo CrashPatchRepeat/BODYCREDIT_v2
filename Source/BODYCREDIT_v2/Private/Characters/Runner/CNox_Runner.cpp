@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Characters/CNoxAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Runner/CMovementComponent.h"
 #include "InputMappingContext.h"
@@ -70,6 +71,10 @@ void ACNox_Runner::InitCharacterMeshes()
 {
 	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
 	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+	
+	TSubclassOf<UCNoxAnimInstance> animInstance;
+	CHelpers::GetClass<UCNoxAnimInstance>(&animInstance, "/Script/Engine.AnimBlueprint'/Game/Characters/Runner/ABP_CNoxAnimInstance_Runner.ABP_CNoxAnimInstance_Runner_C'");
+	GetMesh()->SetAnimInstanceClass(animInstance);
 }
 
 void ACNox_Runner::InitCharacterMovement()
