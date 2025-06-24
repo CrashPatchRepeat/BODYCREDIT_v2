@@ -6,7 +6,7 @@
 CIdleState_CCTV::CIdleState_CCTV(TUniquePtr<CRotateMoveStrategy> InMoveStrategy)
 	: MoveStrategy(MoveTemp(InMoveStrategy)){ }
 
-void CIdleState_CCTV::Execute(ACNox_EBase* Owner, UCFSMComponent* FSMComp)
+void CIdleState_CCTV::Execute(ACNox_EBase* Owner, UCNox_FSMComp* FSMComp)
 {
 	if (MoveStrategy) MoveStrategy->Move(Owner, Owner->GetWorld()->GetDeltaSeconds());
 }

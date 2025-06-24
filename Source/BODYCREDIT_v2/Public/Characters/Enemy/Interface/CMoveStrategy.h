@@ -20,6 +20,6 @@ class BODYCREDIT_V2_API ICMoveStrategy
 	GENERATED_BODY()
 
 public:
-	virtual void Move(ACNox_EBase* Owner, float DeltaTime);
-	virtual void ResetVal(ACNox_EBase* Owner);;
+	virtual void Move(ACNox_EBase* Owner, float DeltaTime)=0;
+	virtual void ResetVal(ACNox_EBase* Owner) {};
 };

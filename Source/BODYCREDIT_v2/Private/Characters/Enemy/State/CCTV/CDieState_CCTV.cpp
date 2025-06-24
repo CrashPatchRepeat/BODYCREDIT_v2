@@ -4,7 +4,7 @@
 #include "NiagaraComponent.h"
 #include "Characters/Enemy/CNox_CCTV.h"
 
-void CDieState_CCTV::Execute(ACNox_EBase* Owner, UCFSMComponent* FSMComp)
+void CDieState_CCTV::Execute(ACNox_EBase* Owner, UCNox_FSMComp* FSMComp)
 {
 	ACNox_CCTV* cctv = Cast<ACNox_CCTV>(Owner);
 

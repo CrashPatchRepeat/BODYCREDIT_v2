@@ -5,7 +5,7 @@
 #include "CEStateStrategy.generated.h"
 
 class ACNox_EBase;
-class UCFSMComponent;
+class UCNox_FSMComp;
 
 UINTERFACE(MinimalAPI)
 class UCEStateStrategy : public UInterface
@@ -21,6 +21,6 @@ class BODYCREDIT_V2_API ICEStateStrategy
 	GENERATED_BODY()
 
 public:
-	virtual void Execute(ACNox_EBase* Owner, UCFSMComponent* FSMComp) = 0;
+	virtual void Execute(ACNox_EBase* Owner, UCNox_FSMComp* FSMComp) = 0;
 	virtual void ResetVal(ACNox_EBase* Owner) {};
 };
