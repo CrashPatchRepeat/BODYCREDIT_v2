@@ -107,7 +107,7 @@ public:
 #pragma endregion
 
 #pragma region Die
-	void HandleDie(const int32 sectionIdx = 1);
+	void HandleDie();
 	void SetLastHitImpulse(const FVector& InImpulse) { LastHitImpulse = InImpulse; }
 
 	void SetLastHitInfo(const FVector& InLocation, const FName& InBoneName = NAME_None)
@@ -157,6 +157,11 @@ public:
 	void PlayDieSound();
 #pragma endregion
 
+#pragma region Debug
+	UPROPERTY(EditDefaultsOnly, Category=Debug)
+	bool bDebug = true;
+#pragma endregion
+
 protected:
 #pragma region Init
 	ACNox_EBase();
@@ -168,11 +173,6 @@ protected:
 	ACNox_EController* EnemyController;
 
 	void InitComp();
-#pragma endregion
-
-#pragma region Debug
-	UPROPERTY(EditDefaultsOnly, Category=Debug)
-	bool bDebug = true;
 #pragma endregion
 
 #pragma region Component

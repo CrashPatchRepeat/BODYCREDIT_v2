@@ -150,7 +150,7 @@ void ACNox_EBase::ResetVal() const
 #pragma endregion
 
 #pragma region Die
-void ACNox_EBase::HandleDie(const int32 sectionIdx)
+void ACNox_EBase::HandleDie()
 {
 	SetRagdoll();
 	EnemyController->PerceptionDeactive();

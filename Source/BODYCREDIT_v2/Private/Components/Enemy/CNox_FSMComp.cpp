@@ -8,6 +8,13 @@
 #include "Characters/Enemy/State/CCTV/CDieState_CCTV.h"
 #include "Characters/Enemy/State/CCTV/CIdleState_CCTV.h"
 #include "Characters/Enemy/State/CCTV/CRotateMoveStrategy.h"
+#include "Characters/Enemy/State/Zero/CCombatState_ZERO.h"
+#include "Characters/Enemy/State/Zero/CConditionalMoveStrategy_ZERO.h"
+#include "Characters/Enemy/State/Zero/CDieState_ZERO.h"
+#include "Characters/Enemy/State/Zero/CHitState_ZERO.h"
+#include "Characters/Enemy/State/Zero/CIdleState_ZERO.h"
+#include "Characters/Enemy/State/Zero/CRandomMoveStrategy_ZERO.h"
+#include "Characters/Enemy/State/Zero/CSenseState_ZERO.h"
 
 #pragma region 생성자
 UCNox_FSMComp::UCNox_FSMComp()
@@ -104,20 +111,19 @@ TMap<EEnemyState, TSharedPtr<ICEStateStrategy>> UCNox_FSMComp::CreateStrategies(
 		}
 		break;
 	case EEnemyType::Zero:
-		// {
-		// 	{
-		// 		TUniquePtr<CSplineMoveStrategy> MoveStrategy = MakeUnique<CSplineMoveStrategy>(
-		// 			Cast<ACNox_Zero>(OwnerEnemy)->GetNearPatrolRoute());
-		// 		Result.Add(EEnemyState::IDLE, MakeShared<CIdleState_ZERO>(MoveTemp(MoveStrategy)));
-		// 	}
-		// 	{
-		// 		TUniquePtr<CConditionalMoveStrategy_ZERO> ConditionalMove = MakeUnique<CConditionalMoveStrategy_ZERO>();
-		// 		Result.Add(EEnemyState::Sense, MakeShared<CSenseState_ZERO>(MoveTemp(ConditionalMove)));
-		// 	}
-		// 	Result.Add(EEnemyState::Hit, MakeShared<CHitState_ZERO>());
-		// 	Result.Add(EEnemyState::Combat, MakeShared<CCombatState_ZERO>());
-		// 	Result.Add(EEnemyState::Die, MakeShared<CDieState_ZERO>());
-		// }
+		{
+			{
+				TUniquePtr<CRandomMoveStrategy_ZERO> MoveStrategy = MakeUnique<CRandomMoveStrategy_ZERO>();
+				Result.Add(EEnemyState::IDLE, MakeShared<CIdleState_ZERO>(MoveTemp(MoveStrategy)));
+			}
+			{
+				TUniquePtr<CConditionalMoveStrategy_ZERO> ConditionalMove = MakeUnique<CConditionalMoveStrategy_ZERO>();
+				Result.Add(EEnemyState::Sense, MakeShared<CSenseState_ZERO>(MoveTemp(ConditionalMove)));
+			}
+			Result.Add(EEnemyState::Hit, MakeShared<CHitState_ZERO>());
+			Result.Add(EEnemyState::Combat, MakeShared<CCombatState_ZERO>());
+			Result.Add(EEnemyState::Die, MakeShared<CDieState_ZERO>());
+		}
 		break;
 	case EEnemyType::MedicAndroid:
 		// {
@@ -161,47 +167,47 @@ TMap<EEnemyState, TSharedPtr<ICEStateStrategy>> UCNox_FSMComp::CreateStrategies(
 void UCNox_FSMComp::InitSkillCoolDowns(EEnemyType Type)
 {
 	// TODO: 스킬 쿨타임 초기화 로직 구현
-	// switch (Type)
-	// {
-	// case EEnemyType::Zero:
-	// 	{
-	// 		ACNox_Zero* ZeroEnemy = Cast<ACNox_Zero>(OwnerEnemy);
-	// 		if (ZeroEnemy)
-	// 		{
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), ZeroEnemy->MeleeCoolDown);
-	// 		}
-	// 	}
-	// 	break;
-	// case EEnemyType::MedicAndroid:
-	// 	{
-	// 		ACNox_Medic* MedicEnemy = Cast<ACNox_Medic>(OwnerEnemy);
-	// 		if (MedicEnemy)
-	// 		{
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), MedicEnemy->MeleeCoolDown);
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), MedicEnemy->HealCoolDown);
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), MedicEnemy->GrenadeCoolDown);
-	// 		}
-	// 	}
-	// 	break;
-	// default:
-	// 	{
-	// 		ACNox_Memory* MemoryEnemy = Cast<ACNox_Memory>(OwnerEnemy);
-	// 		if (MemoryEnemy)
-	// 		{
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Ranged), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Ranged), MemoryEnemy->RangedCoolDown);
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Beam), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Beam), MemoryEnemy->BeamCoolDown);
-	// 			SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::WavePulse), 0.f);
-	// 			SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::WavePulse), MemoryEnemy->WavePulseCoolDown);
-	// 		}
-	// 	}
-	// 	break;
-	// }
+	switch (Type)
+	{
+	case EEnemyType::Zero:
+		{
+			ACNox_Zero* ZeroEnemy = Cast<ACNox_Zero>(OwnerEnemy);
+			if (ZeroEnemy)
+			{
+				SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), 0.f);
+				SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), ZeroEnemy->MeleeCoolDown);
+			}
+		}
+		break;
+	case EEnemyType::MedicAndroid:
+		// {
+		// 	ACNox_Medic* MedicEnemy = Cast<ACNox_Medic>(OwnerEnemy);
+		// 	if (MedicEnemy)
+		// 	{
+		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), 0.f);
+		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), MedicEnemy->MeleeCoolDown);
+		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), 0.f);
+		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), MedicEnemy->HealCoolDown);
+		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), 0.f);
+		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), MedicEnemy->GrenadeCoolDown);
+		// 	}
+		// }
+		break;
+	default:
+		// {
+		// 	ACNox_Memory* MemoryEnemy = Cast<ACNox_Memory>(OwnerEnemy);
+		// 	if (MemoryEnemy)
+		// 	{
+		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Ranged), 0.f);
+		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Ranged), MemoryEnemy->RangedCoolDown);
+		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Beam), 0.f);
+		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Beam), MemoryEnemy->BeamCoolDown);
+		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::WavePulse), 0.f);
+		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::WavePulse), MemoryEnemy->WavePulseCoolDown);
+		// 	}
+		// }
+		break;
+	}
 }
 #pragma endregion
 
