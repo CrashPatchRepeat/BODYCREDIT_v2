@@ -10,20 +10,17 @@ class UEnhancedInputComponent;
 UENUM(BlueprintType)
 enum class EMoveDirection : uint8
 {
-	Forward = 0,
-	Backward,
-	Left,
-	Right,
+	Forward = 0, // 정면(W)
+	Backward,    // 뒤(S)
+	Left,        // 왼쪽(A)
+	Right,       // 오른쪽(D)
 	Max
 };
 
 UENUM(BlueprintType)
 enum class ESpeedType : uint8
 {
-	Walk = 0,
-	Sprint,
-	Crouch,
-	Max
+	Crouch = 0, Walk, Run, Sprint, Max
 };
 
 USTRUCT(BlueprintType)
@@ -37,10 +34,6 @@ struct FSpeedSet
 	FSpeedSet()
 	{
 		Speed.SetNum((int32)EMoveDirection::Max);
-		Speed[(int32)EMoveDirection::Forward] = 500.f;
-		Speed[(int32)EMoveDirection::Backward] = 300.f;
-		Speed[(int32)EMoveDirection::Left] = 350.f;
-		Speed[(int32)EMoveDirection::Right] = 350.f;
 	}
 };
 
@@ -50,51 +43,102 @@ class BODYCREDIT_V2_API UCMovementComponent : public UCBaseComponent
 	GENERATED_BODY()
 
 public:
-	FORCEINLINE float GetWalkSpeed() { return SpeedSets[(int32)ESpeedType::Walk].Speed[(int32)EMoveDirection::Forward]; }
-	FORCEINLINE float GetRunSpeed() { return SpeedSets[(int32)ESpeedType::Walk].Speed[(int32)EMoveDirection::Forward]; }
-	FORCEINLINE float GetSprintSpeed() { return SpeedSets[(int32)ESpeedType::Sprint].Speed[(int32)EMoveDirection::Forward]; }
-	
-	
 	UCMovementComponent();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SetupInputBindings(UEnhancedInputComponent* InEnhancedInputComponent);
-	
-	void SetSpeed(ESpeedType InType, EMoveDirection InDirection);
 
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
-	UInputAction* IA_Movement;
+	void InitInputAction();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
-	UInputAction* IA_Look;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
-	UInputAction* IA_Sprint;
-	
+#pragma region Speed
 	UPROPERTY(EditAnywhere, Category = "Speed")
 	FSpeedSet SpeedSets[(int32)ESpeedType::Max];
 
-	ESpeedType CurrentSpeedType = ESpeedType::Walk;
-	EMoveDirection CurrentMoveDirection = EMoveDirection::Forward;
-	bool bIsSprintKeyDown = false;
-	bool bIsCrouching = false;
+	void InitSpeedSets();
+
+	// 속도 설정 함수
+	void SetSpeed(ESpeedType InType, EMoveDirection InDirection);
+#pragma endregion
+
+#pragma region Movement
+	// IA_Movement
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Movement;
+
+	// 이동 가능 여부
+	bool bCanMove = true;
+
+	// W키가 눌렸는지 여부
 	bool bIsWKeyDown = false;
 
-	void InitInputAction();
+	// 현재 속도 타입
+	ESpeedType CurrentSpeedType = ESpeedType::Walk;
 
+	// 현재 입력 방향
+	EMoveDirection CurrentMoveDirection = EMoveDirection::Forward;
+
+	// 이동 함수
 	void OnMovement(const struct FInputActionValue& InVal);
 	void OffMovement(const struct FInputActionValue& InVal);
-	
+
+	// 현재 방향 계산 함수
+	EMoveDirection GetMoveDirection(const FVector2D& MoveInput) const;
+
+	// 현재 속도 계산 함수
+	float GetCurrentSpeed() const;
+#pragma endregion
+
+#pragma region Look
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Look;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float HorizontalLook = 50.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float VerticalLook = 50.0f;
+
+	bool bFixedCamera = false;
+
 	void OnLook(const struct FInputActionValue& InVal);
-	
+#pragma endregion
+
+#pragma region Sprint
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Sprint;
+
+	// Sprint 키가 눌렸는지 여부
+	bool bIsSprintKeyDown = false;
+
 	void OnSprint(const struct FInputActionValue& InVal);
 	void OffSprint(const struct FInputActionValue& InVal);
+#pragma endregion
 
-	EMoveDirection GetMoveDirection(const FVector2D& MoveInput) const;
-	float GetCurrentSpeed() const;
+#pragma region Jump
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Jump;
+
+	void OnJump(const struct FInputActionValue& InVal);
+#pragma endregion
+
+#pragma region Crouch
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "EnhancedInput", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Crouch;
+
+	bool bIsCrouching = false;
+
+	// 커스텀 크라우치 보간 변수
+	float StandCapsuleHalfHeight = 0.f;
+	float CrouchCapsuleHalfHeight = 0.f;
+	float CapsuleInterpSpeed = 12.f;
+	float TargetCapsuleHalfHeight = 0.f;
+
+	void OnCrouch(const struct FInputActionValue& InVal);
+#pragma endregion
+
 };

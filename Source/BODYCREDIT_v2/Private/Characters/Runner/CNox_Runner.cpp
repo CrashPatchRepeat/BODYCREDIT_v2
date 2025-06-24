@@ -12,6 +12,7 @@
 ACNox_Runner::ACNox_Runner()
 {
 	InitCameraAndSpringArm();
+	InitCharacterMeshes();
 	InitCharacterMovement();
 	InitCustomComponents();
 	InitMappingContexts();
@@ -55,16 +56,27 @@ void ACNox_Runner::BeginPlay()
 void ACNox_Runner::InitCameraAndSpringArm()
 {
 	CHelpers::CreateComponent<USpringArmComponent>(this, &SpringArmComponent, TEXT("SpringArmComponent"), RootComponent);
-	SpringArmComponent->TargetArmLength = 300.0f;
+	SpringArmComponent->bDoCollisionTest = false;
+	SpringArmComponent->bEnableCameraLag = true;
+	SpringArmComponent->TargetArmLength = 200;
 	SpringArmComponent->bUsePawnControlRotation = true;
 
 	CHelpers::CreateComponent<UCameraComponent>(this, &CameraComponent, TEXT("CameraComponent"), SpringArmComponent);
+	CameraComponent->SetRelativeLocation(FVector(-80, 60, 100));
 	CameraComponent->bUsePawnControlRotation = false;
+}
+
+void ACNox_Runner::InitCharacterMeshes()
+{
+	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
+	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 }
 
 void ACNox_Runner::InitCharacterMovement()
 {
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 }
 
 void ACNox_Runner::InitCustomComponents()
