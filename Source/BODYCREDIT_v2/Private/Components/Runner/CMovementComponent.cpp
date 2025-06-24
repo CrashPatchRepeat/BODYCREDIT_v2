@@ -5,8 +5,6 @@
 #include "InputActionValue.h"
 #include "Characters/CNox.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
 
 UCMovementComponent::UCMovementComponent()
 {
