@@ -4,7 +4,6 @@
 #include "Components/Runner/CStatusComponent.h"
 #include "CNox_EStatusComp.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BODYCREDIT_V2_API UCNox_EStatusComp : public UCStatusComponent
 {
@@ -12,12 +11,10 @@ class BODYCREDIT_V2_API UCNox_EStatusComp : public UCStatusComponent
 
 public:	
 	UCNox_EStatusComp();
+	void HealHP(float InHealAmount);
 
 protected:
 	virtual void BeginPlay() override;
-
-public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 		
 };

@@ -6,6 +6,11 @@ UCNox_EStatusComp::UCNox_EStatusComp()
 
 }
 
+void UCNox_EStatusComp::HealHP(float InHealAmount)
+{
+	SetHealth(FMath::Min(GetMaxHealth(), GetHealth() + InHealAmount));
+}
+
 void UCNox_EStatusComp::BeginPlay()
 {
 	Super::BeginPlay();

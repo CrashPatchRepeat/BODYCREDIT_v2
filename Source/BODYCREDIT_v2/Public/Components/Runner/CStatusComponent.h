@@ -13,10 +13,22 @@ class BODYCREDIT_V2_API UCStatusComponent : public UCBaseComponent
 public:	
 	UCStatusComponent();
 
+#pragma region Health
+	void SetHealth(const float InHealth) {Health = InHealth;}
+	float GetHealth() const { return Health; }
+	float GetMaxHealth() const { return MaxHealth; }
+	float GetHealthPercent() const { return Health / MaxHealth; }
+#pragma endregion
+
 protected:
 	virtual void BeginPlay() override;
-
-public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-		
+
+private:
+#pragma region Health
+	UPROPERTY(EditDefaultsOnly, Category="Status")
+	float MaxHealth{500};
+	UPROPERTY(VisibleAnywhere, Category="Status")
+	float Health;
+#pragma endregion
 };

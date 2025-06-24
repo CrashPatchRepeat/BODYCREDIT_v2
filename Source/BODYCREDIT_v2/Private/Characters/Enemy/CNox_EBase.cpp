@@ -24,8 +24,6 @@ void ACNox_EBase::BeginPlay()
 void ACNox_EBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// TODO FSMComp, StatusComp 기능 만들고 주석 해제
 	
 	if (FSMComp && !bExtractSucceed) FSMComp->UpdateState();
 	
@@ -40,13 +38,13 @@ void ACNox_EBase::Tick(float DeltaTime)
 				GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
 									GetActorLocation().Z - 50), myState, nullptr, FColor::Yellow, 0);
 		}
-		// if (StatusComp)
-		// {
-		// 	FString myHP = FString::Printf(TEXT("%.2f"), StatusComp->GetHealthPercent());
-		// 	DrawDebugString(
-		// 		GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
-		// 							GetActorLocation().Z - 100), myHP, nullptr, FColor::Red, 0);
-		// }
+		if (StatusComp)
+		{
+			FString myHP = FString::Printf(TEXT("%.2f"), StatusComp->GetHealthPercent());
+			DrawDebugString(
+				GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
+									GetActorLocation().Z - 100), myHP, nullptr, FColor::Red, 0);
+		}
 	}
 }
 
@@ -76,8 +74,7 @@ void ACNox_EBase::InitComp()
 		CHelpers::CreateActorComponent<UCNox_EStatusComp>(this, &StatusComp, "StatusComp");
 		CHelpers::CreateActorComponent<UCNox_FSMComp>(this, &FSMComp, "FSMComp");
 
-		// TODO : LootInventoryComp 추가하기
-		
+		// TODO : LootInventoryComp 추가하기		
 		// CHelpers::CreateActorComponent<UAC_LootingInventoryComponent>(this, &LootInventoryComp, "LootInventoryComp");
 	}
 }
@@ -100,9 +97,7 @@ void ACNox_EBase::SetApplyDamage(AActor* DamagedPlayer, const float DamageAmout)
 #pragma region Target
 void ACNox_EBase::SetTarget(ACNox* InTarget)
 {
-	// TODO FSMComp, StatusComp 기능 만들고 주석 해제
-	
-	// if (StatusComp->GetHealthPercent() <= FLT_MIN) return;
+	if (StatusComp->GetHealthPercent() <= FLT_MIN) return;
 	
 	Target = InTarget;
 	Target ? FSMComp->SetEnemyState(EEnemyState::Sense) : FSMComp->SetEnemyState(EEnemyState::IDLE);
@@ -195,8 +190,7 @@ void ACNox_EBase::SetRagdoll()
 #pragma region Heal (Medic)
 void ACNox_EBase::HealHP()
 {
-	// TODO: 힐 처리 구현
-	// StatusComp->HealHP(HealAmount);
+	StatusComp->HealHP(HealAmount);
 }
 #pragma endregion
 
@@ -207,12 +201,20 @@ bool ACNox_EBase::IsPlayerInForwardDegree(const float InForwardRange, const floa
 
 	const FVector MyLocation = GetActorLocation();
 	FVector TargetLocation = Target->GetActorLocation();
+
+	// Z축 차이가 100 이상이면 false 리턴
+	if (FMath::Abs(MyLocation.Z - TargetLocation.Z) >= 100.f)
+	{
+		if (bDebug) CLog::Print(TEXT("Z축 차이로 인한 false 반환"));
+		return false;
+	}
+
 	const float DistanceSquared = FVector::DistSquared(MyLocation, TargetLocation);
 
 	// 거리 제곱으로 비교하여 제곱근 연산 방지
 	if (DistanceSquared > FMath::Square(InForwardRange))
 	{
-		CLog::Log("Out Of Range");
+		if (bDebug) CLog::Print(FString::Printf(TEXT("DistanceSquared : %f"), DistanceSquared));
 		return false;
 	}
 
