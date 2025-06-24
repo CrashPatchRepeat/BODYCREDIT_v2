@@ -139,8 +139,8 @@ void ACNox_EBase::HandleHit(const int32 sectionIdx)
 bool ACNox_EBase::IsHitting()
 {
 	// TODO: 피격 중 여부 반환
-	return false;
 	// return EnemyAnim->IsHitting();
+	return false;
 }
 
 void ACNox_EBase::ResetVal() const

@@ -16,8 +16,15 @@ public:
 #pragma region Health
 	void SetHealth(const float InHealth) {Health = InHealth;}
 	float GetHealth() const { return Health; }
+	void SetMaxHealth(const float InMaxHealth) { MaxHealth = InMaxHealth; }
 	float GetMaxHealth() const { return MaxHealth; }
 	float GetHealthPercent() const { return Health / MaxHealth; }
+#pragma endregion
+
+#pragma region Damage
+	virtual void TakeDamage(const float Amount);
+	void Die() { bIsDead = true; }
+	bool IsDead() const { return bIsDead; }
 #pragma endregion
 
 protected:
@@ -30,5 +37,9 @@ private:
 	float MaxHealth{500};
 	UPROPERTY(VisibleAnywhere, Category="Status")
 	float Health;
+#pragma endregion
+
+#pragma region Damage
+	bool bIsDead{false};
 #pragma endregion
 };

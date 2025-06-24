@@ -6,8 +6,8 @@
 #include "Global.h"
 #include "CNox_FSMComp.generated.h"
 
+class ICEStateStrategy;
 class ACNox_EBase;
-class ICEnemyStateStrategy;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BODYCREDIT_V2_API UCNox_FSMComp : public UCBaseComponent
@@ -57,8 +57,8 @@ private:
 	ACNox_EBase* OwnerEnemy = nullptr;
 	EEnemyState CurrentEnemyState = EEnemyState::IDLE;
 	ECombatState CurrentCombatState = ECombatState::Default;
-	TMap<EEnemyState, TSharedPtr<ICEnemyStateStrategy>> EnemyStrategies;
-	TMap<EEnemyState, TSharedPtr<ICEnemyStateStrategy>> CreateStrategies(EEnemyType Type);
+	TMap<EEnemyState, TSharedPtr<ICEStateStrategy>> EnemyStrategies;
+	TMap<EEnemyState, TSharedPtr<ICEStateStrategy>> CreateStrategies(EEnemyType Type);
 #pragma endregion
 
 #pragma region 스킬_쿨타임_데이터
