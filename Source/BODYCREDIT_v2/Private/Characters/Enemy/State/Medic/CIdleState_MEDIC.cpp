@@ -1,7 +1,6 @@
 #include "Characters/Enemy/State/Medic/CIdleState_MEDIC.h"
-
-#include "CRandomMoveStrategy_MEDIC.h"
 #include "Characters/Enemy/CNox_EBase.h"
+#include "Characters/Enemy/State/Medic/CRandomMoveStrategy_MEDIC.h"
 
 CIdleState_MEDIC::CIdleState_MEDIC(TUniquePtr<CRandomMoveStrategy_MEDIC> InMoveStrategy)
 	: MoveStrategy(MoveTemp(InMoveStrategy)){}

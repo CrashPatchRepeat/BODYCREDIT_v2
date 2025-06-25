@@ -1,8 +1,7 @@
 #include "Characters/Enemy/State/Medic/CSenseState_MEDIC.h"
-
-#include "CConditionalMoveStrategy_MEDIC.h"
 #include "Characters/Enemy/CNox_EBase.h"
 #include "Characters/Enemy/State/CEnemyState.h"
+#include "Characters/Enemy/State/Medic/CConditionalMoveStrategy_MEDIC.h"
 
 CSenseState_MEDIC::CSenseState_MEDIC(TUniquePtr<CConditionalMoveStrategy_MEDIC> InMoveStrategy)
 	: MoveStrategy(MoveTemp(InMoveStrategy)){}
