@@ -1,8 +1,10 @@
 #include "Characters/Enemy/CNox_Memory.h"
 
 #include "Characters/Enemy/AttackActor/CBeam.h"
+#include "Characters/Enemy/AttackActor/CRangeProjectile.h"
 #include "Characters/Enemy/AttackActor/CWavePulse.h"
 #include "Components/Enemy/CNox_EAnimInstance.h"
+#include "Global.h"
 
 #pragma region Beam
 void ACNox_Memory::ShutBeam()
@@ -108,3 +110,51 @@ void ACNox_Memory::SetMemoryTarget_MemoryMoveEnd(const FMemoryFragment& InNewMem
 	CurrentTargetMemory = InNewMemory;
 }
 #pragma endregion
+
+void ACNox_Memory::StartRangeAttack(bool bIsRight)
+{
+	if (RangeProjectileArray.Num() == 0) SpawnRangeProjectile();
+
+	FTransform SpawnTransform = bIsRight
+									? GetMesh()->GetSocketTransform(FName("RangeAttackSocket_r"), RTS_World)
+									: GetMesh()->GetSocketTransform(FName("RangeAttackSocket_l"), RTS_World);
+	SpawnTransform.SetScale3D(SpawnScale);
+
+	auto* PoolObj = RangeProjectileArray.Pop();
+	PoolObj->InitializeProjectile(SpawnTransform.GetLocation(), Target);
+	PoolObj->SetActorTransform(SpawnTransform);
+	PoolObj->SetActorHiddenInGame(false);
+	PoolObj->SetCollisionEnabled(true);
+	PoolObj->SetActorTickEnabled(true);
+}
+
+void ACNox_Memory::ReturnToPool(ACRangeProjectile* ReturnedProjectile)
+{
+	if (RangeProjectileArray.Num() == 0 || !RangeProjectileArray.Contains(ReturnedProjectile))
+	{
+		RangeProjectileArray.Emplace(ReturnedProjectile);
+	}
+
+	ReturnedProjectile->SetActorHiddenInGame(true);
+	ReturnedProjectile->SetCollisionEnabled(false);
+	ReturnedProjectile->SetActorTickEnabled(false);
+}
+
+void ACNox_Memory::SpawnRangeProjectile()
+{
+	for (int32 i = 0; i < SpawnProjectileCount; ++i)
+	{
+		FTransform Transform(FRotator::ZeroRotator, FVector::ZeroVector, SpawnScale);
+		FActorSpawnParameters SpawnParam;
+		SpawnParam.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		ACRangeProjectile* PoolObj = GetWorld()->SpawnActorDeferred<ACRangeProjectile>(
+			RangeProjectileCls, Transform, this, nullptr,
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		PoolObj->SetActorEnableCollision(false);
+		PoolObj->SetActorHiddenInGame(true);
+		PoolObj->SetActorTickEnabled(false);
+
+		UGameplayStatics::FinishSpawningActor(PoolObj, Transform);
+		RangeProjectileArray.Emplace(PoolObj);
+	}
+}

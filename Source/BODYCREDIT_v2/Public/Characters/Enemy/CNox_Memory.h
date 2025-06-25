@@ -5,6 +5,7 @@
 #include "State/CMemoryData.h"
 #include "CNox_Memory.generated.h"
 
+class ACRangeProjectile;
 class ACBeam;
 class ACWavePulse;
 class ACVent;
@@ -55,6 +56,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Skill CoolDown")
 	float WavePulseCoolDown = 20.0f;
 #pragma endregion
+
+#pragma region Projectile
+	void StartRangeAttack(bool bIsRight);
+	void ReturnToPool(ACRangeProjectile* ReturnedProjectile);
+#pragma endregion
 	
 private:
 #pragma region Beam
@@ -89,5 +95,18 @@ private:
 #pragma region Stair
 	UPROPERTY()
 	TArray<ACStair*> AllStair;
+#pragma endregion
+
+#pragma region Projectile
+	UPROPERTY()
+	TSubclassOf<ACRangeProjectile> RangeProjectileCls;
+	UPROPERTY(VisibleAnywhere)
+	TArray<ACRangeProjectile*> RangeProjectileArray;
+	UPROPERTY(EditAnywhere)
+	int32 SpawnProjectileCount = 16;
+	UPROPERTY(EditAnywhere)
+	FVector SpawnScale=FVector(1);
+	
+	void SpawnRangeProjectile();
 #pragma endregion
 };
