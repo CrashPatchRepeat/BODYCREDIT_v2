@@ -8,6 +8,13 @@
 #include "Characters/Enemy/State/CCTV/CDieState_CCTV.h"
 #include "Characters/Enemy/State/CCTV/CIdleState_CCTV.h"
 #include "Characters/Enemy/State/CCTV/CRotateMoveStrategy.h"
+#include "Characters/Enemy/State/Medic/CCombatState_MEDIC.h"
+#include "Characters/Enemy/State/Medic/CConditionalMoveStrategy_MEDIC.h"
+#include "Characters/Enemy/State/Medic/CDieState_MEDIC.h"
+#include "Characters/Enemy/State/Medic/CHitState_MEDIC.h"
+#include "Characters/Enemy/State/Medic/CIdleState_MEDIC.h"
+#include "Characters/Enemy/State/Medic/CRandomMoveStrategy_MEDIC.h"
+#include "Characters/Enemy/State/Medic/CSenseState_MEDIC.h"
 #include "Characters/Enemy/State/Zero/CCombatState_ZERO.h"
 #include "Characters/Enemy/State/Zero/CConditionalMoveStrategy_ZERO.h"
 #include "Characters/Enemy/State/Zero/CDieState_ZERO.h"
@@ -126,20 +133,20 @@ TMap<EEnemyState, TSharedPtr<ICEStateStrategy>> UCNox_FSMComp::CreateStrategies(
 		}
 		break;
 	case EEnemyType::MedicAndroid:
-		// {
-		// 	{
-		// 		TUniquePtr<CRandomMoveStrategy> MoveStrategy = MakeUnique<CRandomMoveStrategy>();
-		// 		Result.Add(EEnemyState::IDLE, MakeShared<CIdleState_MEDIC>(MoveTemp(MoveStrategy)));
-		// 	}
-		// 	{
-		// 		TUniquePtr<CConditionalMoveStrategy_MEDIC> ConditionalMove = MakeUnique<
-		// 			CConditionalMoveStrategy_MEDIC>();
-		// 		Result.Add(EEnemyState::Sense, MakeShared<CSenseState_MEDIC>(MoveTemp(ConditionalMove)));
-		// 	}
-		// 	Result.Add(EEnemyState::Hit, MakeShared<CHitState_MEDIC>());
-		// 	Result.Add(EEnemyState::Combat, MakeShared<CCombatState_MEDIC>());
-		// 	Result.Add(EEnemyState::Die, MakeShared<CDieState_MEDIC>());
-		// }
+		{
+			{
+				TUniquePtr<CRandomMoveStrategy_MEDIC> MoveStrategy = MakeUnique<CRandomMoveStrategy_MEDIC>();
+				Result.Add(EEnemyState::IDLE, MakeShared<CIdleState_MEDIC>(MoveTemp(MoveStrategy)));
+			}
+			{
+				TUniquePtr<CConditionalMoveStrategy_MEDIC> ConditionalMove = MakeUnique<
+					CConditionalMoveStrategy_MEDIC>();
+				Result.Add(EEnemyState::Sense, MakeShared<CSenseState_MEDIC>(MoveTemp(ConditionalMove)));
+			}
+			Result.Add(EEnemyState::Hit, MakeShared<CHitState_MEDIC>());
+			Result.Add(EEnemyState::Combat, MakeShared<CCombatState_MEDIC>());
+			Result.Add(EEnemyState::Die, MakeShared<CDieState_MEDIC>());
+		}
 		break;
 	case EEnemyType::MemoryCollector:
 		// {
@@ -180,18 +187,18 @@ void UCNox_FSMComp::InitSkillCoolDowns(EEnemyType Type)
 		}
 		break;
 	case EEnemyType::MedicAndroid:
-		// {
-		// 	ACNox_Medic* MedicEnemy = Cast<ACNox_Medic>(OwnerEnemy);
-		// 	if (MedicEnemy)
-		// 	{
-		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), 0.f);
-		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), MedicEnemy->MeleeCoolDown);
-		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), 0.f);
-		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), MedicEnemy->HealCoolDown);
-		// 		SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), 0.f);
-		// 		SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), MedicEnemy->GrenadeCoolDown);
-		// 	}
-		// }
+		{
+			ACNox_Medic* MedicEnemy = Cast<ACNox_Medic>(OwnerEnemy);
+			if (MedicEnemy)
+			{
+				SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), 0.f);
+				SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Melee), MedicEnemy->MeleeCoolDown);
+				SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), 0.f);
+				SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Heal), MedicEnemy->HealCoolDown);
+				SkillCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), 0.f);
+				SkillMaxCoolDowns.Add(GetSkillName(ESkillCoolDown::Grenade), MedicEnemy->GrenadeCoolDown);
+			}
+		}
 		break;
 	default:
 		// {
