@@ -20,7 +20,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Team")
-	uint8 TeamID = 1;	
+	uint8 TeamID = 1;
+
+#pragma region Hit Reaction
+	void PlayHitStop(float InHitStopTime);
+	void PlayLaunchCharacter(float InLaunchPower);
+#pragma endregion
 	
 private:
 	virtual FGenericTeamId GetGenericTeamId() const override { return FGenericTeamId(TeamID); }

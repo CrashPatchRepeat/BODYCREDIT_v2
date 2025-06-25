@@ -25,6 +25,12 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+#pragma region Flash Bang
+	UFUNCTION(BlueprintNativeEvent)
+	void ReactFlashBang(FVector InLocation);
+	virtual void ReactFlashBang_Implementation(FVector InLocation) {};
+#pragma endregion
+
 protected:
 	virtual void BeginPlay() override;
 
