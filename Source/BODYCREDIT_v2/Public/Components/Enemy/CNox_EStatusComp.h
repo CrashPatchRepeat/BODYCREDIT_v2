@@ -9,12 +9,9 @@ class BODYCREDIT_V2_API UCNox_EStatusComp : public UCStatusComponent
 {
 	GENERATED_BODY()
 
-public:	
-	UCNox_EStatusComp();
+public:
 	void HealHP(float InHealAmount);
 
 protected:
-	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 		
 };

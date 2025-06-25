@@ -32,13 +32,6 @@
 #include "Characters/Enemy/State/Zero/CRandomMoveStrategy_ZERO.h"
 #include "Characters/Enemy/State/Zero/CSenseState_ZERO.h"
 
-#pragma region 생성자
-UCNox_FSMComp::UCNox_FSMComp()
-{
-	PrimaryComponentTick.bCanEverTick = true;
-}
-#pragma endregion
-
 #pragma region 상태_관리
 void UCNox_FSMComp::UpdateState()
 {
@@ -97,6 +90,22 @@ FName UCNox_FSMComp::GetSkillName(ESkillCoolDown SkillType) const
 	case ESkillCoolDown::WavePulse: return FName(TEXT("WavePulseCoolDown"));
 	default: return FName(TEXT("UnknownCoolDown"));
 	}
+}
+
+void UCNox_FSMComp::UpdateSkillCoolDowns(ESkillCoolDown Skill, float DeltaTime)
+{
+	SkillCoolDowns[GetSkillName(Skill)] += DeltaTime;
+	CLog::Log(FString::Printf(TEXT("SkillCoolDowns[%s] = %f"), *GetSkillName(Skill).ToString(), SkillCoolDowns[GetSkillName(Skill)]));
+}
+
+bool UCNox_FSMComp::IsSkillReady(ESkillCoolDown Skill) const
+{
+	return SkillCoolDowns[GetSkillName(Skill)] >= SkillMaxCoolDowns[GetSkillName(Skill)];
+}
+
+void UCNox_FSMComp::UsingSkill(ESkillCoolDown Skill)
+{
+	SkillCoolDowns[GetSkillName(Skill)] = 0.f;
 }
 #pragma endregion
 

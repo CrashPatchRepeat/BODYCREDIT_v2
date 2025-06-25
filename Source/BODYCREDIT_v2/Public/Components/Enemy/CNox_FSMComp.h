@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "Characters/Enemy/State/CEnemyState.h"
 #include "Components/CBaseComponent.h"
-#include "Global.h"
 #include "CNox_FSMComp.generated.h"
 
 class ICEStateStrategy;
@@ -15,11 +14,6 @@ class BODYCREDIT_V2_API UCNox_FSMComp : public UCBaseComponent
 	GENERATED_BODY()
 
 public:
-#pragma region 생성자_및_초기화
-	UCNox_FSMComp();
-	void InitializeFSM(ACNox_EBase* InOwner);
-#pragma endregion
-
 #pragma region 상태_관리
 	void UpdateState();
 	void ResetVal(EEnemyType Type);
@@ -31,19 +25,9 @@ public:
 
 #pragma region 스킬_쿨타임_관리
 	FName GetSkillName(ESkillCoolDown SkillType) const;
-	void UpdateSkillCoolDowns(ESkillCoolDown Skill, float DeltaTime)
-	{
-		SkillCoolDowns[GetSkillName(Skill)] += DeltaTime;
-		CLog::Log(FString::Printf(TEXT("SkillCoolDowns[%s] = %f"), *GetSkillName(Skill).ToString(), SkillCoolDowns[GetSkillName(Skill)]));
-	}
-	bool IsSkillReady(ESkillCoolDown Skill) const
-	{
-		return SkillCoolDowns[GetSkillName(Skill)] >= SkillMaxCoolDowns[GetSkillName(Skill)];
-	}
-	void UsingSkill(ESkillCoolDown Skill)
-	{
-		SkillCoolDowns[GetSkillName(Skill)] = 0.f;
-	}
+	void UpdateSkillCoolDowns(ESkillCoolDown Skill, float DeltaTime);
+	bool IsSkillReady(ESkillCoolDown Skill) const;
+	void UsingSkill(ESkillCoolDown Skill);	
 #pragma endregion
 
 protected:

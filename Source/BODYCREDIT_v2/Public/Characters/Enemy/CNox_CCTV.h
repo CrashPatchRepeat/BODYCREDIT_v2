@@ -25,6 +25,8 @@ public:
 #pragma endregion
 
 private:
+	ACNox_CCTV();
+	
 #pragma region CCTV Mesh
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* CCTVMesh;

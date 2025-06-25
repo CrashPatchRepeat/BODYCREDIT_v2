@@ -14,12 +14,17 @@
 ACNox_EBase::ACNox_EBase()
 {
 	TeamID = 2;
+	InitComp();
 }
 
 void ACNox_EBase::BeginPlay()
 {
 	Super::BeginPlay();
-	InitComp();
+
+	if (auto Anim = GetMesh()->GetAnimInstance())
+		EnemyAnim = Cast<UCNox_EAnimInstance>(Anim);
+
+	SoundComponent->SetSound(IdleSoundCue);
 }
 
 void ACNox_EBase::Tick(float DeltaTime)

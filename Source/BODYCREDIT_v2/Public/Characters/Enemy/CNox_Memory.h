@@ -34,6 +34,7 @@ public:
 #pragma endregion
 
 #pragma region Memory
+	void RegisterMemory(const FMemoryFragment& InNewMemory);
 	bool IsMemoryEmpty() const { return MemoryQueue.Num() > 0; }
 	const FMemoryFragment& GetMemoryTarget() const { return CurrentTargetMemory; }
 	bool EvaluateMemory();
@@ -63,6 +64,13 @@ public:
 #pragma endregion
 	
 private:
+	ACNox_Memory();
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void SetPerceptionInfo() override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void GetNewMovementSpeed(const EEnemyMovementSpeed& InMovementSpeed, float& OutNewSpeed, float& OutNewAccelSpeed) override;
+	
 #pragma region Beam
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACBeam> BeamOrgCls;

@@ -5,6 +5,183 @@
 #include "Characters/Enemy/AttackActor/CWavePulse.h"
 #include "Components/Enemy/CNox_EAnimInstance.h"
 #include "Global.h"
+#include "Characters/Enemy/State/CEnemyState.h"
+#include "Components/Enemy/CNox_EStatusComp.h"
+#include "Components/Enemy/CNox_FSMComp.h"
+#include "Engine/DamageEvents.h"
+#include "Transportation/CVent.h"
+#include "Transportation/CStair.h"
+
+ACNox_Memory::ACNox_Memory()
+{
+	{
+		ConstructorHelpers::FObjectFinder<USkeletalMesh> tmpMesh(TEXT(
+			"/Game/Assets/Sci_Fi_Characters_Pack/Mesh/Sci_Fi_Character_04/SK_Sci_Fi_Character_04_Full.SK_Sci_Fi_Character_04_Full"));
+		if (tmpMesh.Succeeded())
+			GetMesh()->SetSkeletalMesh(tmpMesh.Object);
+
+		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -85), FRotator(0, -90, 0));
+		GetMesh()->SetRelativeScale3D(FVector(1.1));
+
+		GetCapsuleComponent()->SetCapsuleHalfHeight(100.f);
+		GetCapsuleComponent()->SetCapsuleRadius(34.f);
+
+		GetMesh()->SetRelativeLocation(FVector(0, 0, -100));
+	}
+
+	{
+		CHelpers::GetClass<ACBeam>(&BeamOrgCls, TEXT("/Game/Characters/Enemy/AttackActor/BP_LaserBeam.BP_LaserBeam_C"));
+		CHelpers::GetClass<ACWavePulse>(&WavePulseOrgCls,
+										TEXT("/Game/Characters/Enemy/AttackActor/BP_WavePulse.BP_WavePulse_C"));
+		CHelpers::GetClass<ACRangeProjectile>(&RangeProjectileCls,
+											  TEXT(
+												  "/Game/Characters/Enemy/AttackActor/BP_RangeProjectile.BP_RangeProjectile_C"));
+	}
+
+	{
+		ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClass(
+			TEXT("/Game/Characters/Enemy/Anim/MemoryAnim/ABP_MemoryAnim.ABP_MemoryAnim_C"));
+		if (AnimInstanceClass.Succeeded()) GetMesh()->SetAnimInstanceClass(AnimInstanceClass.Class);
+	}
+
+	EnemyType = EEnemyType::MemoryCollector;
+	SetPerceptionInfo();
+}
+
+void ACNox_Memory::BeginPlay()
+{
+	Super::BeginPlay();
+	{
+		CHelpers::FindActors<ACVent>(GetWorld(), AllVent);
+		CHelpers::FindActors<ACStair>(GetWorld(), AllStair);
+	}
+
+	{
+		// Beam
+		FVector SpawnLocation = FVector::ZeroVector;
+		FRotator SpawnRotation = FRotator::ZeroRotator;
+
+		FActorSpawnParameters params;
+		params.Owner = this;
+		Beam = GetWorld()->SpawnActor<ACBeam>(BeamOrgCls, SpawnLocation, SpawnRotation, params);
+		if (Beam)
+		{
+			Beam->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, FName("BeamSocket"));
+			Beam->SetActorHiddenInGame(true);
+		}
+	}
+
+	{
+		// WavePulse
+		FVector SpawnLocation = FVector::ZeroVector;
+		FRotator SpawnRotation = FRotator::ZeroRotator;
+
+		FActorSpawnParameters params;
+		params.Owner = this;
+		WavePulse = GetWorld()->SpawnActor<ACWavePulse>(WavePulseOrgCls, SpawnLocation, SpawnRotation, params);
+		if (WavePulse)
+		{
+			WavePulse->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform,
+										 FName("PulseWaveSocket"));
+			WavePulse->SetActorHiddenInGame(true);
+		}
+	}
+
+	{
+		// RangeProjectile
+		SpawnRangeProjectile();
+	}
+}
+
+void ACNox_Memory::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	if (bRotateToTarget)
+	{
+		RotateToTarget(DeltaSeconds, GetTransform(), Target->GetActorLocation());
+	}
+}
+
+void ACNox_Memory::SetPerceptionInfo()
+{
+	Super::SetPerceptionInfo();
+	SightRadius = 800.f;
+	HearingRange = 1000.f;
+
+	RetentionTime = 0.f;
+}
+
+float ACNox_Memory::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!GetTarget())
+		if (ACNox* player = Cast<ACNox>(DamageCauser->GetOwner())) SetTarget(player);
+	
+	StatusComp->TakeDamage(DamageAmount);
+	if (StatusComp->IsDead()) {
+		if (DamageCauser)
+		{
+			FVector ImpulseDir = GetActorLocation() - DamageCauser->GetActorLocation();
+			ImpulseDir.Z = 0;
+			ImpulseDir.Normalize();
+			FVector Impulse = ImpulseDir * 5000.f;
+			SetLastHitImpulse(Impulse);
+		}
+		// 피격 위치/본 정보 저장
+		if (DamageEvent.IsOfType(FPointDamageEvent::ClassID))
+		{
+			const FPointDamageEvent* PointEvent = static_cast<const FPointDamageEvent*>(&DamageEvent);
+			SetLastHitInfo(PointEvent->HitInfo.ImpactPoint, PointEvent->HitInfo.BoneName);
+		}
+		else if (DamageEvent.IsOfType(FRadialDamageEvent::ClassID))
+		{
+			const FRadialDamageEvent* RadialEvent = static_cast<const FRadialDamageEvent*>(&DamageEvent);
+			if (RadialEvent->ComponentHits.Num() > 0)
+				SetLastHitInfo(RadialEvent->ComponentHits[0].ImpactPoint, RadialEvent->ComponentHits[0].BoneName);
+		}
+		else
+		{
+			SetLastHitInfo(GetActorLocation());
+		}
+		FSMComp->SetEnemyState(EEnemyState::Die);
+	}
+	else
+	{
+		if (FSMComp->GetEnemyState() == EEnemyState::Combat) return DamageAmount;
+
+		PlayLaunchCharacter(500);
+		PlayHitStop(0.05);
+		
+		const float HitChance = 0.3f; // 30% 확률로 피격 상태 진입
+		const float rand = FMath::FRand(); // 0~1 랜덤
+		if (rand <= HitChance)
+		{
+			ResetVal();
+			FSMComp->SetEnemyState(EEnemyState::Hit);
+		}
+	}
+	return DamageAmount;
+}
+
+void ACNox_Memory::GetNewMovementSpeed(const EEnemyMovementSpeed& InMovementSpeed, float& OutNewSpeed,
+	float& OutNewAccelSpeed)
+{
+	switch (InMovementSpeed)
+	{
+	case EEnemyMovementSpeed::Idle:
+		OutNewSpeed = 0.f;
+		OutNewAccelSpeed = 0.f;
+		break;
+	case EEnemyMovementSpeed::Walking:
+		OutNewSpeed = 400.f;
+		OutNewAccelSpeed = 728.f;
+		break;
+	case EEnemyMovementSpeed::Sprinting:
+		OutNewSpeed = 400.f;
+		OutNewAccelSpeed = 1024.f;
+		break;
+	}
+}
 
 #pragma region Beam
 void ACNox_Memory::ShutBeam()
@@ -50,6 +227,35 @@ void ACNox_Memory::WavePulseAttack()
 #pragma endregion
 
 #pragma region Memory
+void ACNox_Memory::RegisterMemory(const FMemoryFragment& InNewMemory)
+{
+	// 중복 방지: 동일 위치/플레이어 기억은 덮어쓰기 또는 무시
+	for (FMemoryFragment& Mem : MemoryQueue)
+	{
+		if (Mem.TriggerType == InNewMemory.TriggerType &&
+			Mem.ZoneID == InNewMemory.ZoneID)
+		{
+			if (InNewMemory.TimeStamp > Mem.TimeStamp)
+			{
+				Mem = InNewMemory; // 더 최신이면 갱신
+			}
+			return; // 중복 방지
+		}
+	}
+
+	// 새로운 기억 추가
+	MemoryQueue.Add(InNewMemory);
+
+	// 우선순위 재계산
+	FVector AILocation = GetActorLocation();
+	for (FMemoryFragment& Mem : MemoryQueue)
+	{
+		Mem.CalculatePriority(AILocation);
+	}
+
+	MemoryQueue.Sort(); // operator< 로 우선순위 내림차순 정렬
+}
+
 bool ACNox_Memory::EvaluateMemory()
 {
 	float Now = GetWorld()->GetTimeSeconds();

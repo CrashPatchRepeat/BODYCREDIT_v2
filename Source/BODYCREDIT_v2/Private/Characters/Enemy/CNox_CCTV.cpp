@@ -5,6 +5,59 @@
 #include "Components/Enemy/CNox_EStatusComp.h"
 #include "Components/Enemy/CNox_FSMComp.h"
 #include "Engine/OverlapResult.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Global.h"
+
+ACNox_CCTV::ACNox_CCTV()
+{
+	EnemyType = EEnemyType::Cctv;
+
+	GetCapsuleComponent()->SetCapsuleRadius(32.f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(32.f);
+	GetCharacterMovement()->GravityScale = 0.f;
+
+	CHelpers::CreateComponent(this, &CCTVMesh, "CCTVMesh", RootComponent);
+	CCTVMesh->SetRelativeLocation(FVector(0, 0, -14));
+	CCTVMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	CHelpers::GetStaticAsset<UStaticMeshComponent>(
+		&CCTVMesh, TEXT("/Game/Assets/cctv_prop/source/prop_cctv_cam_01a_001.prop_cctv_cam_01a_001"));
+}
+
+void ACNox_CCTV::BeginPlay()
+{
+	Super::BeginPlay();
+	InitialRotation = GetActorRotation();
+	SumRotYaw = InitialRotation.Yaw;
+
+	StatusComp->SetMaxHealth(30);
+}
+
+void ACNox_CCTV::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (FSMComp->GetEnemyState() == EEnemyState::Hit || FSMComp->GetEnemyState() == EEnemyState::Sense)
+		FSMComp->SetEnemyState(EEnemyState::IDLE);
+}
+
+void ACNox_CCTV::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	if (auto* con = Cast<ACNox_EController>(NewController))
+		con->OnDetectPlayer.BindUObject(this, &ACNox_CCTV::BroadCastDetectPlayer);
+}
+
+float ACNox_CCTV::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser)
+{
+	if (StatusComp->IsDead()) return DamageAmount;
+	
+	StatusComp->TakeDamage(DamageAmount);
+	if (StatusComp->IsDead()) FSMComp->SetEnemyState(EEnemyState::Die);
+	return DamageAmount;
+}
 
 void ACNox_CCTV::RotateCCTV(float DeltaTime)
 {
@@ -41,40 +94,6 @@ void ACNox_CCTV::RotateCCTV(float DeltaTime)
 	FRotator NewRotation = CurrentRotation;
 	NewRotation.Yaw = NewYaw;
 	SetActorRotation(NewRotation);
-}
-
-void ACNox_CCTV::BeginPlay()
-{
-	Super::BeginPlay();
-	InitialRotation = GetActorRotation();
-	SumRotYaw = InitialRotation.Yaw;
-
-	StatusComp->SetMaxHealth(30);
-}
-
-void ACNox_CCTV::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (FSMComp->GetEnemyState() == EEnemyState::Hit || FSMComp->GetEnemyState() == EEnemyState::Sense)
-		FSMComp->SetEnemyState(EEnemyState::IDLE);
-}
-
-void ACNox_CCTV::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	if (auto* con = Cast<ACNox_EController>(NewController))
-		con->OnDetectPlayer.BindUObject(this, &ACNox_CCTV::BroadCastDetectPlayer);
-}
-
-float ACNox_CCTV::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
-	AController* EventInstigator, AActor* DamageCauser)
-{
-	if (StatusComp->IsDead()) return DamageAmount;
-	
-	StatusComp->TakeDamage(DamageAmount);
-	if (StatusComp->IsDead()) FSMComp->SetEnemyState(EEnemyState::Die);
-	return DamageAmount;
 }
 
 void ACNox_CCTV::BroadCastDetectPlayer(ACNox* DetectPlayer)
