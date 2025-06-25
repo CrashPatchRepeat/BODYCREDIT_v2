@@ -4,6 +4,8 @@
 #include "Characters/Enemy/CNox_EBase.h"
 #include "CNox_Medic.generated.h"
 
+class ACElectricGrenade;
+
 /**
  * 
  */
@@ -16,12 +18,13 @@ public:
 #pragma region Grenade
 	void HandleElectricGrenade();
 	bool IsPlayingGrenade() const;
+	void LaunchElectricGrenade();
 #pragma endregion
 
 #pragma region Heal
 	bool IsLowHealth();
-	void HandleEquipShield(bool bInEquipShield);
-	bool IsShielding() const;
+	void HandleHeal(bool bInEquipShield);
+	bool IsHealing() const;
 #pragma endregion
 
 #pragma region Skill CoolDown
@@ -41,5 +44,19 @@ private:
 	class UNiagaraSystem* HealEffectFactory = nullptr;
 	UPROPERTY()
 	class UNiagaraComponent* HealEffect = nullptr;
+#pragma endregion
+
+#pragma region Grenade
+	// UPROPERTY(VisibleDefaultsOnly)
+	// TSubclassOf<ACElectricGrenade> ElectricGrenadeCls;
+	// UPROPERTY(VisibleAnywhere)
+	// ACElectricGrenade* ElectricGrenade;
+
+	void SuggestProjectileVelocityWithLimit(FVector& OutVelocity,
+											const FVector& StartLocation,
+											const FVector& TargetLocation,
+											float MaxSpeed = 1500.f,
+											float GravityZ = -980.f
+	);
 #pragma endregion
 };

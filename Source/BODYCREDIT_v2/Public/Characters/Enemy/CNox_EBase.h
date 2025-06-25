@@ -75,7 +75,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Montage)
 	UAnimMontage* GrenadeMontage;
 	UPROPERTY(EditDefaultsOnly, Category=Montage)
-	UAnimMontage* ShieldMontage;
+	UAnimMontage* HealMontage;
 	// Memory Collector
 	UPROPERTY(EditDefaultsOnly, Category=Montage)
 	UAnimMontage* Attack1Montage;

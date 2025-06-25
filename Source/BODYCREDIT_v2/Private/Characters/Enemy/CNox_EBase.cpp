@@ -7,6 +7,7 @@
 #include "Components/Enemy/CNox_FSMComp.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/Enemy/CNox_EAnimInstance.h"
 #include "Sound/SoundCue.h"
 
 #pragma region 생성자 및 기본 오버라이드
@@ -117,30 +118,24 @@ void ACNox_EBase::SetMovementSpeed(const EEnemyMovementSpeed& InMovementSpeed)
 #pragma region Attacking
 void ACNox_EBase::HandleAttack()
 {
-	// TODO: 공격 처리 구현
-	// EnemyAnim->PlayAttackMontage();
+	EnemyAnim->PlayAttackMontage();
 }
 
 bool ACNox_EBase::IsAttacking()
 {
-	// TODO: 공격 중 여부 반환
-	// return EnemyAnim->IsAttacking();
-	return false;
+	return EnemyAnim->IsAttacking();
 }
 #pragma endregion
 
 #pragma region Hitting
 void ACNox_EBase::HandleHit(const int32 sectionIdx)
 {
-	// TODO: 피격 처리 구현
-	// EnemyAnim->PlayHitMontage(sectionIdx);
+	EnemyAnim->PlayHitMontage(sectionIdx);
 }
 
 bool ACNox_EBase::IsHitting()
 {
-	// TODO: 피격 중 여부 반환
-	// return EnemyAnim->IsHitting();
-	return false;
+	return EnemyAnim->IsHitting();
 }
 
 void ACNox_EBase::ResetVal() const

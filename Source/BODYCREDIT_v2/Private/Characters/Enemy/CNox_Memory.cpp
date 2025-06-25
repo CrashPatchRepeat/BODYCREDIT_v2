@@ -7,15 +7,12 @@
 #pragma region Beam
 void ACNox_Memory::ShutBeam()
 {
-	// TODO Anim 추가 후 주석 해제
-	// EnemyAnim->PlayBeamAttack();
+	EnemyAnim->PlayBeamAttack();
 }
 
 bool ACNox_Memory::IsPlayBeam()
 {
-	// TODO Anim 추가 후 주석 해제
-	// return EnemyAnim->IsBeamAttacking();
-	return false;
+	return EnemyAnim->IsBeamAttacking();
 }
 
 void ACNox_Memory::BeamAttack()
@@ -26,8 +23,7 @@ void ACNox_Memory::BeamAttack()
 
 void ACNox_Memory::BeamAttackEnd()
 {
-	// TODO Anim 추가 후 주석 해제
-	// EnemyAnim->StopBeamAttack();
+	EnemyAnim->StopBeamAttack();
 
 	Beam->SetBeamActive(false, Target);
 	bRotateToTarget = false;
@@ -37,15 +33,12 @@ void ACNox_Memory::BeamAttackEnd()
 #pragma region Wave Pulse
 void ACNox_Memory::ShutWavePulse()
 {
-	// TODO Anim 추가 후 주석 해제
-	// EnemyAnim->PlayWavePulse();
+	EnemyAnim->PlayWavePulse();
 }
 
 bool ACNox_Memory::IsPlayWavePulse()
 {
-	// TODO Anim 추가 후 주석 해제
-	// return EnemyAnim->IsWavePulseAttacking();
-	return false;
+	return EnemyAnim->IsWavePulseAttacking();
 }
 
 void ACNox_Memory::WavePulseAttack()

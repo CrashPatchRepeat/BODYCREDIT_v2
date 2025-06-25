@@ -19,7 +19,7 @@ void CCombat_HealState_MEDIC::Execute(ACNox_EBase* Owner, UCNox_FSMComp* FSMComp
 			AICon->StopMovement();
 			
 			bFired = true;
-			Medic->HandleEquipShield(bFired);
+			Medic->HandleHeal(bFired);
 		}
 		else // 힐 사용 중
 		{
@@ -29,7 +29,7 @@ void CCombat_HealState_MEDIC::Execute(ACNox_EBase* Owner, UCNox_FSMComp* FSMComp
 				bFired = false;
 				CurHealTime = 0.f;
 				bHealEnd = true;
-				Medic->HandleEquipShield(bFired);
+				Medic->HandleHeal(bFired);
 				return;
 			}
 
@@ -38,7 +38,7 @@ void CCombat_HealState_MEDIC::Execute(ACNox_EBase* Owner, UCNox_FSMComp* FSMComp
 	}
 	else
 	{
-		if (!Medic->IsShielding())
+		if (!Medic->IsHealing())
 		{
 			bHealEnd = false;
 			Owner->UsingSkill(ESkillCoolDown::Heal);
