@@ -8,7 +8,9 @@ class ACNox;
 class UAnimMontage;
 class UTimelineComponent;
 class UCurveFloat;
+class UCUserWidget_CrossHair;
 class UParticleSystem;
+class UCameraShakeBase;
 class USoundWave;
 class UMaterialInstanceConstant;
 class ACBullet;
@@ -90,7 +92,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-protected:
+protected:	
 #pragma region Equip
 	UPROPERTY(EditDefaultsOnly, Category = "Equip")
 	FName HolsterSocketName;
@@ -110,7 +112,7 @@ protected:
 	bool bEquipping = false;
 #pragma endregion
 
-#pragma region Aim
+#pragma region Aim	
 	UPROPERTY(EditDefaultsOnly, Category = "Aim")
 	UTimelineComponent* Timeline;
 	
@@ -122,6 +124,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Aim")
 	UCurveFloat* AimCurve;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UCUserWidget_CrossHair> CrossHairClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "UI")
+	UCUserWidget_CrossHair* CrossHair;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Aim")
 	float AimingSpeed = 200;
@@ -142,8 +150,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Fire")
 	float RecoilAngle;
 
-	// UPROPERTY(EditDefaultsOnly, Category = "Fire")
-	// TSubclassOf<class UMatineeCameraShake> CameraShakeClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	TSubclassOf<UCameraShakeBase> CameraShakeClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Fire")
 	float AutoFireInterval;
@@ -196,8 +204,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
 	FName MagazineBoneName;
-
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Magazine")
 	FName MagazineSocketName;
 

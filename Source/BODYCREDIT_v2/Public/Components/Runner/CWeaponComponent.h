@@ -4,12 +4,16 @@
 #include "Components/CBaseComponent.h"
 #include "CWeaponComponent.generated.h"
 
+class EnhancedInputComponent;
+class UInputAction;
 class ACWeapon_Range;
+
+class UCUserWidget_HUD;
 
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {
-	AR, Max,
+	AK, M4, Max,
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponTypeChanged, EWeaponType, InPrevType, EWeaponType, InNewType);
@@ -22,11 +26,15 @@ class BODYCREDIT_V2_API UCWeaponComponent : public UCBaseComponent
 	GENERATED_BODY()
 
 public:
+	virtual void SetupInputBindings(UEnhancedInputComponent* InEnhancedInputComponent);
+	
 	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
-	FORCEINLINE bool IsARMode() { return Type == EWeaponType::AR; }
+	FORCEINLINE bool IsAKMode() { return Type == EWeaponType::AK; }
+	FORCEINLINE bool IsM4Mode() { return Type == EWeaponType::M4; }
 
 	void SetUnarmedMode();
-	void SetARMode();
+	void SetAKMode();
+	void SetM4Mode();
 
 	void Begin_Equip();
 	void End_Equip();
@@ -61,18 +69,37 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_WeaponSlot1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_WeaponSlot2;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Action;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_SubAction;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_AutoFire;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	UInputAction* IA_Reload;
+	
 	UPROPERTY(EditAnywhere, Category = "Settings", meta = (AllowPrivateAccess = "true"))
 	TArray<TSubclassOf<ACWeapon_Range>> WeaponClasses;
 
-	// UPROPERTY(EditAnywhere, Category = "Settings", meta = (AllowPrivateAccess = "true"))
-	// TSubclassOf<class UCUserWidget_HUD> HUDClass;
+	UPROPERTY(EditAnywhere, Category = "Settings", meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UCUserWidget_HUD> HUDClass;
 
-	// UCUserWidget_HUD* HUD;
+	UCUserWidget_HUD* HUD;
 
 	TArray<ACWeapon_Range*> Weapons;
 
 	ACWeapon_Range* GetCurrWeapon();
 
+	UPROPERTY(VisibleAnywhere)
 	EWeaponType Type = EWeaponType::Max;
 
 	void SetMode(EWeaponType InType);

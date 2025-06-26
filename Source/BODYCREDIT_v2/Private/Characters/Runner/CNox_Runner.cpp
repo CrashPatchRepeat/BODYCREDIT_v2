@@ -5,6 +5,7 @@
 #include "Characters/CNoxAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Runner/CMovementComponent.h"
+#include "Components/Runner/CWeaponComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -70,6 +71,9 @@ void ACNox_Runner::SetupPlayerInputComponent(class UInputComponent* PlayerInputC
 
 	// MovementComponent
 	MovementComponent->SetupInputBindings(input);
+
+	// WeaponComponent
+	WeaponComponent->SetupInputBindings(input);
 }
 
 void ACNox_Runner::BeginPlay()
@@ -84,13 +88,14 @@ void ACNox_Runner::BeginPlay()
 void ACNox_Runner::InitCameraAndSpringArm()
 {
 	CHelpers::CreateComponent<USpringArmComponent>(this, &SpringArmComponent, TEXT("SpringArmComponent"), RootComponent);
+	SpringArmComponent->SetRelativeLocation(FVector(0, 0, 60));
 	SpringArmComponent->bDoCollisionTest = false;
-	SpringArmComponent->bEnableCameraLag = true;
 	SpringArmComponent->TargetArmLength = 200;
 	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bEnableCameraLag = true;
 
 	CHelpers::CreateComponent<UCameraComponent>(this, &CameraComponent, TEXT("CameraComponent"), SpringArmComponent);
-	CameraComponent->SetRelativeLocation(FVector(-80, 60, 100));
+	// CameraComponent->SetRelativeLocation(FVector(-80, 60, 100));
 	CameraComponent->bUsePawnControlRotation = false;
 }
 #pragma endregion
@@ -167,12 +172,14 @@ void ACNox_Runner::InitCharacterMovement()
 }
 #pragma endregion
 
+#pragma region Custom Component
 void ACNox_Runner::InitCustomComponents()
 {
-#pragma region MovementComponent
-	CHelpers::CreateActorComponent<UCMovementComponent>(this, &MovementComponent, TEXT("CMovementComponent"));
-#pragma endregion
+	CHelpers::CreateActorComponent<UCMovementComponent>(this, &MovementComponent, TEXT("MovementComponent"));
+	
+	CHelpers::CreateActorComponent<UCWeaponComponent>(this, &WeaponComponent, TEXT("WeaponComponent"));
 }
+#pragma endregion
 
 #pragma region EnhancedInput
 void ACNox_Runner::InitMappingContexts()

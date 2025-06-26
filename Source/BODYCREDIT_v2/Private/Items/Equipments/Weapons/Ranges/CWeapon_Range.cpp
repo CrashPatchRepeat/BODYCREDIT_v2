@@ -1,9 +1,12 @@
 #include "Items/Equipments/Weapons/Ranges/CWeapon_Range.h"
 #include "Global.h"
-#include "Components/TimelineComponent.h"
-#include "Characters/Runner/CNox_Runner.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/TimelineComponent.h"
+#include "Characters/Runner/CNox_Runner.h"
+#include "Widgets/Runners/CUserWidget_CrossHair.h"
+#include "Camera/CameraShakeBase.h"
+#include "GameFramework/PlayerController.h"
 #include "Items/Equipments/Weapons/Ranges/CMagazine.h"
 #include "Items/Equipments/Weapons/Ranges/CBullet.h"
 
@@ -27,7 +30,7 @@ void FWeaponAimData::SetDataByNoneCurve(ACNox* InOwner)
 	springArm->bEnableCameraLag = bEnableCameraLag;
 
 	UCameraComponent* camera = CHelpers::GetComponent<UCameraComponent>(InOwner);
-	CheckNull(camera);;
+	CheckNull(camera);
 	
 	camera->FieldOfView = FieldOfView;
 }
@@ -60,8 +63,8 @@ void ACWeapon_Range::End_Equip()
 {
 	bEquipping = false;
 
-	// if(CrossHair)
-	// 	CrossHair->SetVisibility(ESlateVisibility::Visible);
+	if (CrossHair)
+		CrossHair->SetVisibility(ESlateVisibility::Visible);
 }
 
 bool ACWeapon_Range::CanUnequip()
@@ -81,8 +84,8 @@ void ACWeapon_Range::Unequip()
 	if (HolsterSocketName.IsValid())
 		CHelpers::AttachTo(this, OwnerCharacter->GetMesh(), HolsterSocketName);
 
-	// if (CrossHair)
-	// 	CrossHair->SetVisibility(ESlateVisibility::Hidden);
+	if (CrossHair)
+		CrossHair->SetVisibility(ESlateVisibility::Hidden);
 }
 
 bool ACWeapon_Range::CanAim()
@@ -240,8 +243,8 @@ void ACWeapon_Range::Tick(float DeltaTime)
 			CurrSpreadRadius = 0.0f;
 			LastAddSpreadTime = 0.0f;
 
-			// if(!!CrossHair)
-			// 	CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
+			if(!!CrossHair)
+				CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
 		} //if
 	}
 }
@@ -252,6 +255,9 @@ void ACWeapon_Range::BeginPlay()
 
 	OwnerCharacter = Cast<ACNox_Runner>(GetOwner());
 	CheckNull(OwnerCharacter);
+
+	if (HolsterSocketName.IsValid())
+		CHelpers::AttachTo(this, OwnerCharacter->GetMesh(), HolsterSocketName);
 	
 	BaseData.SetDataByNoneCurve(OwnerCharacter);
 
@@ -265,13 +271,13 @@ void ACWeapon_Range::BeginPlay()
 		Timeline->SetPlayRate(AimingSpeed);
 	}
 
-	// if (!!CrossHairClass)
-	// {
-	// 	CrossHair = CreateWidget<UCUserWidget_CrossHair, APlayerController>(Owner->GetController<APlayerController>(), CrossHairClass);
-	// 	CrossHair->AddToViewport();
-	// 	CrossHair->SetVisibility(ESlateVisibility::Hidden);
-	// 	CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
-	// }
+	if (!!CrossHairClass)
+	{
+		CrossHair = CreateWidget<UCUserWidget_CrossHair, APlayerController*>(OwnerCharacter->GetController<APlayerController>(), CrossHairClass);
+		CrossHair->AddToViewport();
+		CrossHair->SetVisibility(ESlateVisibility::Hidden);
+		CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
+	}
 	
 	CurrMagazineCount = MaxMagazineCount;
 }
@@ -324,26 +330,26 @@ void ACWeapon_Range::OnFiring()
 
 	if (FlashParticle) UGameplayStatics::SpawnEmitterAttached(FlashParticle, Mesh, "muzzle", FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset);
 
-	if (EjectParticle) UGameplayStatics::SpawnEmitterAttached(EjectParticle, Mesh, "Eject", FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset);
+	if (EjectParticle) UGameplayStatics::SpawnEmitterAttached(EjectParticle, Mesh, "bullet_eject", FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::KeepRelativeOffset);
 
 	FVector muzzleLocation = Mesh->GetSocketLocation("muzzle");
 
 	if (FireSound) UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSound, muzzleLocation);
 
-	// if (CameraShakeClass)
-	// {
-	// 	APlayerController* controller = Owner->GetController<APlayerController>();
-	//
-	// 	if (!!controller) controller->PlayerCameraManager->StartCameraShake(CameraShakeClass);
-	// }
-	//
+	if (CameraShakeClass)
+	{
+		APlayerController* controller = OwnerCharacter->GetController<APlayerController>();
+	
+		if (!!controller) controller->PlayerCameraManager->StartCameraShake(CameraShakeClass);
+	}
+	
 	OwnerCharacter->AddControllerPitchInput(-RecoilRate * UKismetMathLibrary::RandomFloatInRange(0.8f, 1.2f));
 	
 	if (CurrSpreadRadius <= 1.0f)
 	{
 		CurrSpreadRadius += SpreadSpeed * GetWorld()->GetDeltaSeconds();
 	
-		// if (!!CrossHair) CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
+		if (!!CrossHair) CrossHair->UpdateSpreadRange(CurrSpreadRadius, MaxSpreadAlignment);
 	}
 	LastAddSpreadTime = GetWorld()->GetTimeSeconds();
 	

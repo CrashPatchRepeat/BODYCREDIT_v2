@@ -16,6 +16,8 @@ public:
 	
 	virtual void Tick(float DeltaTime) override;
 
+	USkeletalMeshComponent* GetSkeletalMesh() const { return Mesh; }
+
 protected:
 	UPROPERTY(visibleanywhere, BlueprintReadOnly, Category = "Mesh")
 	USkeletalMeshComponent* Mesh;

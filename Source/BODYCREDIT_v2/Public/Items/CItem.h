@@ -5,7 +5,7 @@
 #include "CItem.generated.h"
 
 class USceneComponent;
-class ACNox;
+class ACNox_Runner;
 
 UCLASS()
 class BODYCREDIT_V2_API ACItem : public AActor

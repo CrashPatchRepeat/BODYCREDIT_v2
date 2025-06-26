@@ -1,12 +1,17 @@
 #include "Items/Equipments/Weapons/Ranges/CWeapon_Range_AR.h"
 #include "Global.h"
-#include "Characters/CNox.h"
+#include "Camera/CameraComponent.h"
 #include "Characters/Runner/CNox_Runner.h"
+#include "Camera/CameraComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Widgets/Runners/CUserWidget_CrossHair.h"
+#include "Components/Runner/CWeaponComponent.h"
 
 ACWeapon_Range_AR::ACWeapon_Range_AR()
 {
-	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &SightMesh, "Sight", Mesh, "aim");
+	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &SightMesh, "Sight", Mesh, "scope");
+	SightMesh->SetRelativeScale3D(FVector(1, 0.95f, 1));
+	SightMesh->SetCollisionProfileName("NoCollision");
 	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &ButtMesh, "Butt", Mesh, "butt");
 	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &MagazineMesh, "Magazine", Mesh, "magazine");
 
@@ -34,13 +39,13 @@ ACWeapon_Range_AR::ACWeapon_Range_AR()
 		AimData.bEnableCameraLag = false;
 		AimData.TargetArmLength = 30;
 		AimData.SocketOffset = FVector(-55, 0, 10);
-		AimData.FieldOfView = 55;
+		AimData.FieldOfView = 75;
 	}
 
 	//Fire
 	{
 		RecoilAngle = 0.75f;
-		// CHelpers::GetClass<UMatineeCameraShake>(&CameraShakeClass, "Blueprint'/Game/Weapons/BP_CameraShake_AK47.BP_CameraShake_AK47_C'");
+		CHelpers::GetClass<UCameraShakeBase>(&CameraShakeClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/ARs/BP_CameraShake_AR.BP_CameraShake_AR_C'");
 		AutoFireInterval = 0.1f;
 		RecoilRate = 0.05f;
 		SpreadSpeed = 2.0f;
@@ -48,20 +53,20 @@ ACWeapon_Range_AR::ACWeapon_Range_AR()
 	}
 
 	// //UI
-	// {
-	// 	CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "WidgetBlueprint'/Game/Widgets/WB_CrossHair.WB_CrossHair_C'");
-	// }
+	{
+		CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "/Script/UMGEditor.WidgetBlueprint'/Game/Wigets/Runner/WBP_CrossHair.WBP_CrossHair_C'");
+	}
 
 	//Magazine
 	{
 		MaxMagazineCount = 30;
-		MagazineBoneName = "b_gun_mag";
-		MagazineSocketName = "Rifle_Magazine";
+		MagazineBoneName = "magazine";
+		MagazineSocketName = "AR_Magazine";
 	}
 
 	//Arms
 	{
-		ArmsMeshTransform.SetLocation(FVector(-14.25f, -5.85f, -156.935f));
+		ArmsMeshTransform.SetLocation(FVector(-23.0f, -5.9f, -156.935f));
 		ArmsMeshTransform.SetRotation(FQuat(FRotator(-0.5f, -11.85f, -1.2f)));
 
 		ArmsLeftHandTransform.SetLocation(FVector(-33, 11, -1.5f));
@@ -87,30 +92,40 @@ void ACWeapon_Range_AR::Begin_Aim()
 {
 	Super::Begin_Aim();
 
-	// if (CrossHair)
-	// 	CrossHair->SetVisibility(ESlateVisibility::Hidden);
-	//
-	// OwnerCharacter->GetMesh()->SetVisibility(false);
-	// OwnerCharacter->GetBackpack()->SetVisibility(false);
-	// OwnerCharacter->GetArms()->SetVisibility(true);
-	//
-	// CHelpers::AttachTo(this, OwnerCharacter->GetArms(), RightHandSocketName);
-	//
-	// CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter)->OnWeaponAim_Arms_Begin.Broadcast(this);
+	if (CrossHair)
+		CrossHair->SetVisibility(ESlateVisibility::Hidden);
+	
+	OwnerCharacter->GetMesh()->SetVisibility(false);
+	
+	TArray<USceneComponent*> children;
+	OwnerCharacter->GetMesh()->GetChildrenComponents(false, children);
+	for (USceneComponent* child : children)
+		child->SetVisibility(false);
+	
+	OwnerCharacter->GetFPSArms()->SetVisibility(true);
+	
+	CHelpers::AttachTo(this, OwnerCharacter->GetFPSArms(), RightHandSocketName);
+	
+	CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter)->OnWeaponAim_Arms_Begin.Broadcast(this);
 }
 
 void ACWeapon_Range_AR::End_Aim()
 {
 	Super::End_Aim();
 
-	// if (CrossHair)
-	// 	CrossHair->SetVisibility(ESlateVisibility::Visible);
-	//
-	// OwnerCharacter->GetMesh()->SetVisibility(true);
-	// OwnerCharacter->GetBackpack()->SetVisibility(true);
-	// OwnerCharacter->GetArms()->SetVisibility(false);
-	//
-	// CHelpers::AttachTo(this, OwnerCharacter->GetMesh(), RightHandSocketName);
-	//
-	// CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter)->OnWeaponAim_Arms_End.Broadcast();
+	if (CrossHair)
+		CrossHair->SetVisibility(ESlateVisibility::Visible);
+	
+	OwnerCharacter->GetMesh()->SetVisibility(true);
+	
+	TArray<USceneComponent*> children;
+	OwnerCharacter->GetMesh()->GetChildrenComponents(false, children);
+	for (USceneComponent* child : children)
+		child->SetVisibility(true);
+	
+	OwnerCharacter->GetFPSArms()->SetVisibility(false);
+	
+	CHelpers::AttachTo(this, OwnerCharacter->GetMesh(), RightHandSocketName);
+	
+	CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter)->OnWeaponAim_Arms_End.Broadcast();
 }

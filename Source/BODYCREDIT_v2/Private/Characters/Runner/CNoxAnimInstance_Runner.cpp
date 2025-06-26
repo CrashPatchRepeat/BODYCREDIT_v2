@@ -12,6 +12,8 @@ void UCNoxAnimInstance_Runner::NativeBeginPlay()
 	
 	Weapon = CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter);
 	CheckNull(Weapon);
+
+	Weapon->OnWeaponTypeChanged.AddDynamic(this, &UCNoxAnimInstance_Runner::OnWeaponTypeChanged);
 }
 
 void UCNoxAnimInstance_Runner::NativeUpdateAnimation(float DeltaSeconds)

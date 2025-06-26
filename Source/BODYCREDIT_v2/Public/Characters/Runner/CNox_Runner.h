@@ -8,6 +8,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 class UCMovementComponent;
+class UCWeaponComponent;
 
 class UInputMappingContext;
 
@@ -81,6 +82,9 @@ private:
 #pragma region MovementComponent
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CustomComponents", meta = (AllowPrivateAccess = "true"))
 	UCMovementComponent* MovementComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CustomComponents", meta = (AllowPrivateAccess = "true"))
+	UCWeaponComponent* WeaponComponent;
 	
 	void InitCustomComponents();
 #pragma endregion
