@@ -17,6 +17,7 @@ public class BODYCREDIT_v2 : ModuleRules
 			"UMG",
 			"Slate",
 			"SlateCore",
+			"GameplayTags", "CommonUI"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

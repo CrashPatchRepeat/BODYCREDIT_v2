@@ -73,7 +73,6 @@ private:
 #pragma endregion
 
 #pragma region Heal
-	// TODO 몽타주 섹션 이름 변경 필요
 	const FName HealStartSection = "HealStart";
 	const FName HealEndSection = "HealEnd";
 #pragma endregion

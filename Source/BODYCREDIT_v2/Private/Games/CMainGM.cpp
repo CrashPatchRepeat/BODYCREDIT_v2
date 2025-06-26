@@ -16,6 +16,21 @@ ACMainGM::ACMainGM()
 	CHelpers::GetClass(&PlayerControllerClass, TEXT("/Script/Engine.Blueprint'/Game/Games/BP_CNoxController.BP_CNoxController_C'"));
 }
 
+#pragma region App Version
+const FString ACMainGM::GetAppVersion()
+{
+	FString AppVersion;
+	GConfig->GetString(
+		TEXT("/Script/EngineSettings.GeneralProjectSettings"),
+		TEXT("ProjectVersion"),
+		AppVersion,
+		GGameIni
+	);
+
+	return AppVersion;
+}
+#pragma endregion
+
 void ACMainGM::BeginPlay()
 {
 	Super::BeginPlay();

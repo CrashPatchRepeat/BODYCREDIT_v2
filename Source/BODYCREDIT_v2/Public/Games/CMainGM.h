@@ -16,6 +16,11 @@ class BODYCREDIT_V2_API ACMainGM : public AGameMode
 public:
 	ACMainGM();
 
+#pragma region App Version
+	UFUNCTION(BlueprintPure)
+	const FString GetAppVersion();
+#pragma endregion
+	
 #pragma region Memory
 	UPROPERTY(BlueprintReadWrite)
 	bool ExtractTimerTriggerStart = false;
