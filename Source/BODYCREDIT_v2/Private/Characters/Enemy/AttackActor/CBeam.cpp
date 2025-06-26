@@ -4,25 +4,13 @@
 #include "Characters/Enemy/CNox_Memory.h"
 #include "Characters/Runner/CNox_Runner.h"
 
-void ACBeam::SetBeamActive(bool bInActive, AActor* InTarget)
-{
-	SetActorHiddenInGame(!bInActive);
-	TargetActor = InTarget;
-	
-	if (bInActive)
-	{
-		InitializeBeam(InTarget);
-	}
-	else
-	{
-		DeactivateBeam();
-	}
-}
-
 ACBeam::ACBeam()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	CHelpers::CreateComponent<USceneComponent>(this, &rootScene, "rootScene");
+	CHelpers::CreateComponent<UNiagaraComponent>(this, &LaserBeamVFX, "LaserBeamVFX", RootComponent);
+	CHelpers::CreateComponent<UNiagaraComponent>(this, &FireBallVFX, "FireBallVFX", RootComponent);
+	CHelpers::CreateComponent<UNiagaraComponent>(this, &HitVFX, "HitVFX", RootComponent);
 }
 
 void ACBeam::BeginPlay()
@@ -43,6 +31,21 @@ void ACBeam::Tick(float DeltaTime)
 	{
 		UpdateBeamPosition(DeltaTime);
 		UpdateAttackDelay(DeltaTime);
+	}
+}
+
+void ACBeam::SetBeamActive(bool bInActive, AActor* InTarget)
+{
+	SetActorHiddenInGame(!bInActive);
+	TargetActor = InTarget;
+	
+	if (bInActive)
+	{
+		InitializeBeam(InTarget);
+	}
+	else
+	{
+		DeactivateBeam();
 	}
 }
 

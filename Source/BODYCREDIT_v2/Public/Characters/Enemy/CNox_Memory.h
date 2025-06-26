@@ -106,7 +106,7 @@ private:
 #pragma endregion
 
 #pragma region Projectile
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ACRangeProjectile> RangeProjectileCls;
 	UPROPERTY(VisibleAnywhere)
 	TArray<ACRangeProjectile*> RangeProjectileArray;

@@ -81,7 +81,7 @@ private:
 #pragma endregion
 
 #pragma region Grenade
-	UPROPERTY(VisibleDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category=Grenade)
 	TSubclassOf<ACElectricGrenade> ElectricGrenadeCls;
 	UPROPERTY(VisibleAnywhere)
 	ACElectricGrenade* ElectricGrenade;

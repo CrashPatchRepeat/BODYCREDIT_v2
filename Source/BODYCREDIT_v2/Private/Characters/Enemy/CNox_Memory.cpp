@@ -15,11 +15,6 @@
 ACNox_Memory::ACNox_Memory()
 {
 	{
-		ConstructorHelpers::FObjectFinder<USkeletalMesh> tmpMesh(TEXT(
-			"/Game/Assets/Sci_Fi_Characters_Pack/Mesh/Sci_Fi_Character_04/SK_Sci_Fi_Character_04_Full.SK_Sci_Fi_Character_04_Full"));
-		if (tmpMesh.Succeeded())
-			GetMesh()->SetSkeletalMesh(tmpMesh.Object);
-
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -85), FRotator(0, -90, 0));
 		GetMesh()->SetRelativeScale3D(FVector(1.1));
 
@@ -27,21 +22,6 @@ ACNox_Memory::ACNox_Memory()
 		GetCapsuleComponent()->SetCapsuleRadius(34.f);
 
 		GetMesh()->SetRelativeLocation(FVector(0, 0, -100));
-	}
-
-	{
-		CHelpers::GetClass<ACBeam>(&BeamOrgCls, TEXT("/Game/Characters/Enemy/AttackActor/BP_LaserBeam.BP_LaserBeam_C"));
-		CHelpers::GetClass<ACWavePulse>(&WavePulseOrgCls,
-										TEXT("/Game/Characters/Enemy/AttackActor/BP_WavePulse.BP_WavePulse_C"));
-		CHelpers::GetClass<ACRangeProjectile>(&RangeProjectileCls,
-											  TEXT(
-												  "/Game/Characters/Enemy/AttackActor/BP_RangeProjectile.BP_RangeProjectile_C"));
-	}
-
-	{
-		ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClass(
-			TEXT("/Game/Characters/Enemy/Anim/MemoryAnim/ABP_MemoryAnim.ABP_MemoryAnim_C"));
-		if (AnimInstanceClass.Succeeded()) GetMesh()->SetAnimInstanceClass(AnimInstanceClass.Class);
 	}
 
 	EnemyType = EEnemyType::MemoryCollector;

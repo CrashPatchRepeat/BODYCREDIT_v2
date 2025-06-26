@@ -66,8 +66,6 @@ public:
 	// Common
 	UPROPERTY(EditDefaultsOnly, Category=Montage)
 	UAnimMontage* HitMontage;
-	UPROPERTY(EditDefaultsOnly, Category=Montage)
-	UAnimMontage* DieMontage;
 	// Zero, Medic
 	UPROPERTY(EditDefaultsOnly, Category=Montage)
 	UAnimMontage* AttackMontage;

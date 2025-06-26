@@ -22,20 +22,6 @@ ACNox_Zero::ACNox_Zero()
 		AttackComp_l->OnComponentBeginOverlap.AddDynamic(this, &ACNox_Zero::OnAttackComponentBeginOverlap);
 		AttackComp_r->OnComponentBeginOverlap.AddDynamic(this, &ACNox_Zero::OnAttackComponentBeginOverlap);
 	}
-	{
-		// Mesh
-		ConstructorHelpers::FObjectFinder<USkeletalMesh> tmpMesh(TEXT(
-			"/Game/Assets/Cyber_Zombie_Arm/Cyber_Zombie_Arm_UE4/SKM_Cyber_Zombie_Arm_UE4.SKM_Cyber_Zombie_Arm_UE4"));
-		if (tmpMesh.Succeeded())
-			GetMesh()->SetSkeletalMesh(tmpMesh.Object);
-	}
-	{
-		// Anim
-		ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClass(
-			TEXT("/Game/Characters/Enemy/Anim/ZeroAnim/ABP_ZeroAnim.ABP_ZeroAnim_C"));
-		if (AnimInstanceClass.Succeeded())
-			GetMesh()->SetAnimInstanceClass(AnimInstanceClass.Class);
-	}
 }
 
 void ACNox_Zero::BeginPlay()

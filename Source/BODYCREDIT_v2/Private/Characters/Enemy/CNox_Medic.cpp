@@ -15,11 +15,6 @@
 #pragma region 생성 및 초기화
 ACNox_Medic::ACNox_Medic()
 {
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> tmpMesh(TEXT(
-		"/Game/Assets/Sci_Fi_Characters_Pack/Mesh/Sci_Fi_Character_02/SK_Sci_Fi_Character_02_Full.SK_Sci_Fi_Character_02_Full"));
-	if (tmpMesh.Succeeded())
-		GetMesh()->SetSkeletalMesh(tmpMesh.Object);
-
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -110), FRotator(0, -90, 0));
 	GetMesh()->SetRelativeScale3D(FVector(1.55, 1.35, 1.3));
 
@@ -38,18 +33,8 @@ ACNox_Medic::ACNox_Medic()
 		AttackComp_r->OnComponentBeginOverlap.AddDynamic(this, &ACNox_Medic::OnAttackComponentBeginOverlap);
 	}
 
-	ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClass(
-		TEXT("/Game/Characters/Enemy/Anim/MedicAnim/ABP_Medic.ABP_Medic_C"));
-	if (AnimInstanceClass.Succeeded())
-		GetMesh()->SetAnimInstanceClass(AnimInstanceClass.Class);
-
 	EnemyType = EEnemyType::MedicAndroid;
 	SetPerceptionInfo();
-
-	ConstructorHelpers::FClassFinder<ACElectricGrenade> GrenadeClass(
-		TEXT("/Game/Characters/Enemy/AttackActor/BP_ElectircGrenade.BP_ElectircGrenade_C"));
-	if (GrenadeClass.Succeeded())
-		ElectricGrenadeCls = GrenadeClass.Class;
 }
 
 void ACNox_Medic::BeginPlay()

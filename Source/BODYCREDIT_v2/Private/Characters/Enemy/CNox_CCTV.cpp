@@ -20,9 +20,6 @@ ACNox_CCTV::ACNox_CCTV()
 	CHelpers::CreateComponent(this, &CCTVMesh, "CCTVMesh", RootComponent);
 	CCTVMesh->SetRelativeLocation(FVector(0, 0, -14));
 	CCTVMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	CHelpers::GetStaticAsset<UStaticMeshComponent>(
-		&CCTVMesh, TEXT("/Game/Assets/cctv_prop/source/prop_cctv_cam_01a_001.prop_cctv_cam_01a_001"));
 }
 
 void ACNox_CCTV::BeginPlay()

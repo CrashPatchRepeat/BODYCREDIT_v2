@@ -30,9 +30,9 @@ void ACNox_EBase::BeginPlay()
 void ACNox_EBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	if (FSMComp && !bExtractSucceed) FSMComp->UpdateState();
-	
+
 	if (bDebug)
 	{
 		if (FSMComp) // Print Current State
@@ -42,14 +42,14 @@ void ACNox_EBase::Tick(float DeltaTime)
 			myState = UEnum::GetValueOrBitfieldAsString(FSMComp->GetCombatState());
 			DrawDebugString(
 				GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
-									GetActorLocation().Z - 50), myState, nullptr, FColor::Yellow, 0);
+				                    GetActorLocation().Z - 50), myState, nullptr, FColor::Yellow, 0);
 		}
 		if (StatusComp)
 		{
 			FString myHP = FString::Printf(TEXT("%.2f"), StatusComp->GetHealthPercent());
 			DrawDebugString(
 				GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y,
-									GetActorLocation().Z - 100), myHP, nullptr, FColor::Red, 0);
+				                    GetActorLocation().Z - 100), myHP, nullptr, FColor::Red, 0);
 		}
 	}
 }
@@ -65,10 +65,9 @@ void ACNox_EBase::PossessedBy(AController* NewController)
 void ACNox_EBase::InitComp()
 {
 	CHelpers::CreateComponent<UAudioComponent>(this, &SoundComponent, "SoundComponent", RootComponent);
-	
+
 	GetCapsuleComponent()->SetCollisionProfileName(FName("Enemy"));
 	{
-		CHelpers::GetClass(&AIControllerClass, TEXT("/Game/Characters/Enemy/AI/BP_NoxController.BP_NoxController_C"));
 		AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	}
 	{
@@ -104,7 +103,7 @@ void ACNox_EBase::SetApplyDamage(AActor* DamagedPlayer, const float DamageAmout)
 void ACNox_EBase::SetTarget(ACNox* InTarget)
 {
 	if (StatusComp->GetHealthPercent() <= FLT_MIN) return;
-	
+
 	Target = InTarget;
 	Target ? FSMComp->SetEnemyState(EEnemyState::Sense) : FSMComp->SetEnemyState(EEnemyState::IDLE);
 }
@@ -258,7 +257,8 @@ void ACNox_EBase::UsingSkill(ESkillCoolDown Skill)
 #pragma endregion
 
 #pragma region Rotate To Target
-bool ACNox_EBase::RotateToTarget(const float DeltaTime, const FTransform& CurTrans, const FVector& TargetLoc, float InteropSpeed)
+bool ACNox_EBase::RotateToTarget(const float DeltaTime, const FTransform& CurTrans, const FVector& TargetLoc,
+                                 float InteropSpeed)
 {
 	// 1. 현재 위치와 목표 위치를 2D로 변환
 	const FVector CurrentLocation = CurTrans.GetLocation();
@@ -324,6 +324,7 @@ void ACNox_EBase::PlayIdleSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlaySenseSound()
 {
 	if (!SenseSoundCue)
@@ -339,6 +340,7 @@ void ACNox_EBase::PlaySenseSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayAttackSound()
 {
 	if (!AttackSoundCue)
@@ -354,6 +356,7 @@ void ACNox_EBase::PlayAttackSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayGrenadeSound()
 {
 	if (!GrenadeSoundCue)
@@ -369,6 +372,7 @@ void ACNox_EBase::PlayGrenadeSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayHealSound()
 {
 	if (!HealSoundCue)
@@ -384,6 +388,7 @@ void ACNox_EBase::PlayHealSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayBeamSound()
 {
 	if (!BeamSoundCue)
@@ -399,6 +404,7 @@ void ACNox_EBase::PlayBeamSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayWavePulseSound()
 {
 	if (!WavePulseSoundCue)
@@ -414,6 +420,7 @@ void ACNox_EBase::PlayWavePulseSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayHitSound()
 {
 	if (!HitSoundCue)
@@ -429,6 +436,7 @@ void ACNox_EBase::PlayHitSound()
 		SoundComponent->Play();
 	}
 }
+
 void ACNox_EBase::PlayDieSound()
 {
 	if (!DieSoundCue)
