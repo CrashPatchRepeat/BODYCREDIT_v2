@@ -59,6 +59,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Speed")
 	FSpeedSet SpeedSets[(int32)ESpeedType::Max];
 
+	// 속도 보간
+	float TargetSpeed = 0.f;    	// 목표 속도
+	float SpeedInterpRate = 10.f;	// 보간 계수
+	
 	void InitSpeedSets();
 
 	// 속도 설정 함수
