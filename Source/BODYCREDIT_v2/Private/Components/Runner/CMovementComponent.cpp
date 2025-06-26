@@ -19,12 +19,39 @@ void UCMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	CheckNull(OwnerCharacter);
 
 	// --- 캡슐 반경 보간 ---
-	if (UCapsuleComponent* Capsule = CHelpers::GetComponent<UCapsuleComponent>(OwnerCharacter))
+	if (UCapsuleComponent* capsule = CHelpers::GetComponent<UCapsuleComponent>(OwnerCharacter))
 	{
-		float CurrentHalf = Capsule->GetUnscaledCapsuleHalfHeight();
-		float NewHalf = FMath::FInterpTo(CurrentHalf, TargetCapsuleHalfHeight, DeltaTime, CapsuleInterpSpeed);
+		float curHalf = capsule->GetUnscaledCapsuleHalfHeight();
+		float newHalf = FMath::FInterpTo(curHalf, TargetCapsuleHalfHeight, DeltaTime, CapsuleInterpSpeed);
 		
-		Capsule->SetCapsuleHalfHeight(NewHalf, true);
+		capsule->SetCapsuleHalfHeight(newHalf, true);
+	}
+
+	// --- 속도 보간 (추가) ---
+	if (UCharacterMovementComponent* movement = OwnerCharacter->GetCharacterMovement())
+	{
+		float newSpeed = 0.0f;
+
+		if (bIsCrouching)
+		{
+			// crouch 속도 보간 후 바로 할당
+			newSpeed = FMath::FInterpTo(movement->MaxWalkSpeedCrouched, TargetSpeed, DeltaTime, SpeedInterpRate);
+
+			movement->MaxWalkSpeedCrouched = newSpeed;
+		}
+		else
+		{
+			if (!bIsSprintKeyDown)
+			{
+				movement->MaxWalkSpeed = TargetSpeed;
+				
+				return;
+			}
+			
+			// stand 속도 보간 후 바로 할당
+			newSpeed = FMath::FInterpTo(movement->MaxWalkSpeed, TargetSpeed, DeltaTime, SpeedInterpRate);
+			movement->MaxWalkSpeed = newSpeed;
+		}
 	}
 }
 
@@ -62,9 +89,9 @@ void UCMovementComponent::BeginPlay()
 	CheckNull(OwnerCharacter);
 
 	// 캡슐 높이 초기화
-	if (UCapsuleComponent* Capsule = CHelpers::GetComponent<UCapsuleComponent>(OwnerCharacter))
+	if (UCapsuleComponent* capsule = CHelpers::GetComponent<UCapsuleComponent>(OwnerCharacter))
 	{
-		StandCapsuleHalfHeight = Capsule->GetUnscaledCapsuleHalfHeight();
+		StandCapsuleHalfHeight = capsule->GetUnscaledCapsuleHalfHeight();
 		CrouchCapsuleHalfHeight = OwnerCharacter->GetCharacterMovement()->GetCrouchedHalfHeight();
 		TargetCapsuleHalfHeight = StandCapsuleHalfHeight;
 	}
@@ -123,8 +150,7 @@ void UCMovementComponent::SetSpeed(ESpeedType InType, EMoveDirection InDirection
 	UCharacterMovementComponent* movement = OwnerCharacter->GetCharacterMovement();
 	CheckNull(OwnerCharacter->GetCharacterMovement());
 
-	if (InType == ESpeedType::Crouch) movement->MaxWalkSpeedCrouched = SpeedSets[(int32)InType].Speed[(int32)InDirection];
-	else movement->MaxWalkSpeed = SpeedSets[(int32)InType].Speed[(int32)InDirection];
+	TargetSpeed = SpeedSets[(int32)InType].Speed[(int32)InDirection];
 }
 #pragma endregion
 
@@ -216,7 +242,9 @@ void UCMovementComponent::OnJump(const struct FInputActionValue& InVal)
 void UCMovementComponent::OnCrouch(const struct FInputActionValue& InVal)
 {
 	CheckNull(OwnerCharacter);
-
+	CheckNull(OwnerCharacter->GetCharacterMovement());
+	CheckFalse(OwnerCharacter->GetCharacterMovement()->IsMovingOnGround());
+	
 	if (bIsCrouching)
 	{
 		OwnerCharacter->UnCrouch();

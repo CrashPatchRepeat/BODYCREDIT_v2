@@ -1,6 +1,7 @@
 #include "Characters/Runner/CNoxAnimInstance_Runner.h"
 #include "Global.h"
 #include "Characters/Runner/CNox_Runner.h"
+#include "Components/Runner/CWeaponComponent.h"
 
 void UCNoxAnimInstance_Runner::NativeBeginPlay()
 {
@@ -8,6 +9,11 @@ void UCNoxAnimInstance_Runner::NativeBeginPlay()
 
 	OwnerCharacter = Cast<ACNox_Runner>(OwnerCharacter);
 	CheckNull(OwnerCharacter);
+	
+	Weapon = CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter);
+	CheckNull(Weapon);
+
+	Weapon->OnWeaponTypeChanged.AddDynamic(this, &UCNoxAnimInstance_Runner::OnWeaponTypeChanged);
 }
 
 void UCNoxAnimInstance_Runner::NativeUpdateAnimation(float DeltaSeconds)
@@ -27,6 +33,14 @@ void UCNoxAnimInstance_Runner::NativeUpdateAnimation(float DeltaSeconds)
 	Direction = PrevRotation.Yaw;
 
 	bIsCrouching = OwnerCharacter->bIsCrouched;
+	
+	Pitch = UKismetMathLibrary::FInterpTo(Pitch, OwnerCharacter->GetBaseAimRotation().Pitch, DeltaSeconds, 25);
+
+	CheckNull(Weapon);
+	
+	bInAim = Weapon->IsInAim();
+	bUseIK = (Weapon->IsUnarmedMode() == false);
+	LeftHandLocation = Weapon->GetLeftHandLocation();
 }
 
 bool UCNoxAnimInstance_Runner::IsRunning()
@@ -43,4 +57,9 @@ bool UCNoxAnimInstance_Runner::IsSprinting()
 	CheckTrueResult(Speed <= 500.0f, false);
 
 	return true;
+}
+
+void UCNoxAnimInstance_Runner::OnWeaponTypeChanged(EWeaponType InPrevType, EWeaponType InNewType)
+{
+	WeaponType = InNewType;
 }
