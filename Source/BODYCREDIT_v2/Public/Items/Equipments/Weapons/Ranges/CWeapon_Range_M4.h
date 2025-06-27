@@ -26,6 +26,9 @@ private:
 	USkeletalMeshComponent* SightMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
+	UStaticMeshComponent* GlassMesh;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Mesh")
 	UStaticMeshComponent* ButtMesh;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Mesh")

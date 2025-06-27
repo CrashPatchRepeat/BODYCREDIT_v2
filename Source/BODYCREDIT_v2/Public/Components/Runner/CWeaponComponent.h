@@ -13,7 +13,7 @@ class UCUserWidget_HUD;
 UENUM(BlueprintType)
 enum class EWeaponType : uint8
 {
-	AK, M4, Max,
+	AK, M4, Magnum, Max,
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponTypeChanged, EWeaponType, InPrevType, EWeaponType, InNewType);
@@ -31,10 +31,12 @@ public:
 	FORCEINLINE bool IsUnarmedMode() { return Type == EWeaponType::Max; }
 	FORCEINLINE bool IsAKMode() { return Type == EWeaponType::AK; }
 	FORCEINLINE bool IsM4Mode() { return Type == EWeaponType::M4; }
+	FORCEINLINE bool IsMagnumMode() { return Type == EWeaponType::M4; }
 
 	void SetUnarmedMode();
 	void SetAKMode();
 	void SetM4Mode();
+	void SetMagnumMode();
 
 	void Begin_Equip();
 	void End_Equip();
