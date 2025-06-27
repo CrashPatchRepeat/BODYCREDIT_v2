@@ -1,4 +1,4 @@
-#include "Components/Runner/CWeaponComponent.h"
+﻿#include "Components/Runner/CWeaponComponent.h"
 #include "Global.h"
 #include "Characters/Runner/CNox_Runner.h"
 #include "Widgets/Runners/CUserWidget_HUD.h"
@@ -216,7 +216,7 @@ void UCWeaponComponent::On_Begin_End()
 
 UCWeaponComponent::UCWeaponComponent()
 {
-	CHelpers::GetClass<UCUserWidget_HUD>(&HUDClass, "/Script/UMGEditor.WidgetBlueprint'/Game/Wigets/Runner/WBP_CUserWidget_HUD.WBP_CUserWidget_HUD_C'");
+	CHelpers::GetClass<UCUserWidget_HUD>(&HUDClass, "/Script/UMGEditor.WidgetBlueprint'/Game/UIs/Runner/WBP_CUserWidget_HUD.WBP_CUserWidget_HUD_C'");
 
 	CHelpers::GetAsset(&IA_WeaponSlot1, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_WeaponSlot1.IA_WeaponSlot1'"));
 	CHelpers::GetAsset(&IA_WeaponSlot2, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_WeaponSlot2.IA_WeaponSlot2'"));
