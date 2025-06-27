@@ -1,4 +1,4 @@
-#include "Items/Equipments/Weapons/Ranges/CWeapon_Range_AR.h"
+﻿#include "Items/Equipments/Weapons/Ranges/CWeapon_Range_AR.h"
 #include "Global.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/Runner/CNox_Runner.h"
@@ -70,7 +70,7 @@ ACWeapon_Range_AR::ACWeapon_Range_AR()
 
 	// //UI
 	{
-		CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "/Script/UMGEditor.WidgetBlueprint'/Game/Wigets/Runner/WBP_CrossHair.WBP_CrossHair_C'");
+		CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "/Script/UMGEditor.WidgetBlueprint'/Game/UIs/Runner/WBP_CrossHair.WBP_CrossHair_C'");
 	}
 
 	//Magazine
