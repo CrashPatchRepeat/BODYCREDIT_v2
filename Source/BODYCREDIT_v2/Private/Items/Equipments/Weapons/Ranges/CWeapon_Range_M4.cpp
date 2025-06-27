@@ -6,11 +6,13 @@
 #include "Widgets/Runners/CUserWidget_CrossHair.h"
 #include "Characters/Runner/CNox_Runner.h"
 #include "Components/Runner/CWeaponComponent.h"
+#include "Items/Equipments/Weapons/Ranges/CMagazine.h"
 
 ACWeapon_Range_M4::ACWeapon_Range_M4()
 {
 	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &SightMesh, "Sight", Mesh, "aim");
 	SightMesh->SetCollisionProfileName("NoCollision");
+	CHelpers::CreateComponent<UStaticMeshComponent>(this, &GlassMesh, "Glass", SightMesh, "glass_slot");
 	CHelpers::CreateComponent<UStaticMeshComponent>(this, &ReactoreMesh, "Reactor", Mesh, "reactor");
 	CHelpers::CreateComponent<UStaticMeshComponent>(this, &ButtMesh, "Butt", Mesh, "butt_slot");
 	CHelpers::CreateComponent<UStaticMeshComponent>(this, &ForegripMesh, "Foregrip", Mesh, "foregrip_slot");
@@ -24,9 +26,9 @@ ACWeapon_Range_M4::ACWeapon_Range_M4()
 	//Equip
 	{
 		HolsterSocketName = "Holster_AR";
-		CHelpers::GetAsset<UAnimMontage>(&EquipMontage, "");
+		CHelpers::GetAsset<UAnimMontage>(&EquipMontage, "/Script/Engine.AnimMontage'/Game/Characters/Runner/Animations/AR/Rifle_Equip_AK47_Montage.Rifle_Equip_AK47_Montage'");
 		EquipMontage_PlayRate = 2;
-		RightHandSocketName = "RightHand_AR";
+		RightHandSocketName = "RightHand_M4";
 		LeftHandLocation = FVector(-35, 15.5f, 4);
 	}
 
@@ -45,11 +47,12 @@ ACWeapon_Range_M4::ACWeapon_Range_M4()
 
 	//Fire
 	{
+		CHelpers::GetAsset<USoundWave>(&FireSound, "/Script/Engine.SoundWave'/Game/Items/Equipments/Weapons/Ranges/Sounds/M4_Shoot.M4_Shoot'");
 		RecoilAngle = 0.75f;
 		CHelpers::GetClass<UCameraShakeBase>(&CameraShakeClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/ARs/BP_CameraShake_AR.BP_CameraShake_AR_C'");
-		AutoFireInterval = 0.1f;
-		RecoilRate = 0.05f;
-		SpreadSpeed = 2.0f;
+		AutoFireInterval = 0.08f;
+		RecoilRate = 0.2f;
+		SpreadSpeed = 3.0f;
 		MaxSpreadAlignment = 2.0f;
 	}
 
@@ -61,7 +64,10 @@ ACWeapon_Range_M4::ACWeapon_Range_M4()
 	//Magazine
 	{
 		MaxMagazineCount = 30;
-		MagazineBoneName = "magazine";
+		CHelpers::GetAsset<UAnimMontage>(&ReloadMontage, "/Script/Engine.AnimMontage'/Game/Characters/Runner/Animations/AR/Rifle_Reload_Montage.Rifle_Reload_Montage'");
+		ReloadMontage_PlayRate = 1.5f;
+		MagazineBoneName = "magazine_slot";
+		CHelpers::GetClass<ACMagazine>(&MagazineClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/Magazines/BP_CMagazine_AK.BP_CMagazine_AK_C'");
 		MagazineSocketName = "AR_Magazine";
 	}
 

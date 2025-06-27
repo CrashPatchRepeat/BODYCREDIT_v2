@@ -2,6 +2,7 @@
 #include "Global.h"
 #include "Characters/Runner/CNox_Runner.h"
 #include "Components/Runner/CWeaponComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UCNoxAnimInstance_Runner::NativeBeginPlay()
 {
@@ -33,6 +34,8 @@ void UCNoxAnimInstance_Runner::NativeUpdateAnimation(float DeltaSeconds)
 	Direction = PrevRotation.Yaw;
 
 	bIsCrouching = OwnerCharacter->bIsCrouched;
+
+	bFalling = OwnerCharacter->GetCharacterMovement()->IsFalling();
 	
 	Pitch = UKismetMathLibrary::FInterpTo(Pitch, OwnerCharacter->GetBaseAimRotation().Pitch, DeltaSeconds, 25);
 

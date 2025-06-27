@@ -35,6 +35,9 @@ protected:
 
 	UPROPERTY(blueprintreadonly, Category = "Movement")
 	float Direction = 0.0f;
+
+	UPROPERTY(blueprintreadonly, Category = "Movement")
+	bool bFalling = false;
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Weapons")
 	EWeaponType WeaponType = EWeaponType::Max;

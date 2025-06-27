@@ -45,6 +45,11 @@ void UCWeaponComponent::SetM4Mode()
 	SetMode(EWeaponType::M4);
 }
 
+void UCWeaponComponent::SetMagnumMode()
+{
+	SetMode(EWeaponType::Magnum);
+}
+
 void UCWeaponComponent::Begin_Equip()
 {
 	CheckNull(GetCurrWeapon());
@@ -120,6 +125,7 @@ FTransform UCWeaponComponent::GetLeftHandTransform()
 void UCWeaponComponent::Reload()
 {
 	CheckNull(GetCurrWeapon());
+	CheckFalse(GetCurrWeapon()->CanReload());
 
 	GetCurrWeapon()->Reload();
 }
@@ -227,24 +233,24 @@ void UCWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GEngine)
-	{
-		// UEnum 객체 얻기 (패키지 경로는 ANY_PACKAGE)
-		const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponType"), true);
-		if (EnumPtr)
-		{
-			// enum 값을 문자열로 변환
-			FString WeaponName = EnumPtr->GetNameByValue((int64)Type).ToString();
-
-			// 화면에 출력 (키 -1 은 자동으로 새로운 메시지 ID 부여)
-			GEngine->AddOnScreenDebugMessage(
-				-1,           // 메시지 ID
-				0.0f,         // 화면에 남기는 시간 (0이면 다음 Tick 때 지워짐)
-				FColor::White,// 텍스트 색
-				FString::Printf(TEXT("Weapon: %s"), *WeaponName)
-			);
-		}
-	}
+	// if (GEngine)
+	// {
+	// 	// UEnum 객체 얻기 (패키지 경로는 ANY_PACKAGE)
+	// 	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EWeaponType"), true);
+	// 	if (EnumPtr)
+	// 	{
+	// 		// enum 값을 문자열로 변환
+	// 		FString WeaponName = EnumPtr->GetNameByValue((int64)Type).ToString();
+	//
+	// 		// 화면에 출력 (키 -1 은 자동으로 새로운 메시지 ID 부여)
+	// 		GEngine->AddOnScreenDebugMessage(
+	// 			-1,           // 메시지 ID
+	// 			0.0f,         // 화면에 남기는 시간 (0이면 다음 Tick 때 지워짐)
+	// 			FColor::White,// 텍스트 색
+	// 			FString::Printf(TEXT("Weapon: %s"), *WeaponName)
+	// 		);
+	// 	}
+	// }
 	
 	if (!!HUD)
 	{

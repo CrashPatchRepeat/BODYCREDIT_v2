@@ -179,6 +179,8 @@ bool ACWeapon_Range::CanReload()
 
 void ACWeapon_Range::Reload()
 {
+	CheckTrue(CurrMagazineCount == MaxMagazineCount);
+	
 	bReload = true;
 
 	End_Aim();
@@ -230,6 +232,14 @@ void ACWeapon_Range::End_Reload()
 ACWeapon_Range::ACWeapon_Range()
 {
 	CHelpers::CreateActorComponent<UTimelineComponent>(this, &Timeline, "TimelineComponent");
+	
+	CHelpers::GetAsset<UCurveFloat>(&AimCurve, "/Script/Engine.CurveFloat'/Game/Items/Equipments/Weapons/Ranges/ARs/Curve_Aim.Curve_Aim'");
+	
+	CHelpers::GetAsset<UParticleSystem>(&HitParticle, "/Script/Engine.ParticleSystem'/Game/Items/Equipments/Weapons/Ranges/Effects/P_Impact_Default.P_Impact_Default'");
+
+	CHelpers::GetAsset<UParticleSystem>(&FlashParticle, "/Script/Engine.ParticleSystem'/Game/Items/Equipments/Weapons/Ranges/Effects/P_Muzzleflash.P_Muzzleflash'");
+	CHelpers::GetAsset<UParticleSystem>(&EjectParticle, "/Script/Engine.ParticleSystem'/Game/Items/Equipments/Weapons/Ranges/Effects/P_Eject_bullet.P_Eject_bullet'");
+	CHelpers::GetClass<ACBullet>(&BulletClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/Bullets/BP_CBullet.BP_CBullet_C'");
 }
 
 void ACWeapon_Range::Tick(float DeltaTime)

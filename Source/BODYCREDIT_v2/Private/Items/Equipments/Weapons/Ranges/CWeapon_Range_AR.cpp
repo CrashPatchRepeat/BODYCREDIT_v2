@@ -2,18 +2,33 @@
 #include "Global.h"
 #include "Camera/CameraComponent.h"
 #include "Characters/Runner/CNox_Runner.h"
-#include "Camera/CameraComponent.h"
+#include "Items/Equipments/Weapons/Ranges/CMagazine.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Widgets/Runners/CUserWidget_CrossHair.h"
 #include "Components/Runner/CWeaponComponent.h"
 
 ACWeapon_Range_AR::ACWeapon_Range_AR()
 {
+	USkeletalMesh* asset;
+	CHelpers::GetAsset(&asset, TEXT("/Script/Engine.SkeletalMesh'/Game/Items/Equipments/Weapons/Ranges/ARs/Assault_AK/SK_Rifle_Mesh/SK_Rifle_Assault_Rifle.SK_Rifle_Assault_Rifle'"));
+	
+	// Mesh	
+	Mesh->SetSkeletalMesh(asset);
+
+	// Sight
 	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &SightMesh, "Sight", Mesh, "scope");
+	CHelpers::GetAsset(&asset, TEXT("/Script/Engine.SkeletalMesh'/Game/Items/Equipments/Weapons/Ranges/ARs/Assault_AK/SK_Rifle_Mesh/SK_Aim.SK_Aim'"));
+	SightMesh->SetSkeletalMesh(asset);
 	SightMesh->SetRelativeScale3D(FVector(1, 0.95f, 1));
 	SightMesh->SetCollisionProfileName("NoCollision");
+	
 	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &ButtMesh, "Butt", Mesh, "butt");
+	CHelpers::GetAsset(&asset, TEXT("/Script/Engine.SkeletalMesh'/Game/Items/Equipments/Weapons/Ranges/ARs/Assault_AK/SK_Rifle_Mesh/SK_Butt.SK_Butt'"));
+	ButtMesh->SetSkeletalMesh(asset);
+	
 	CHelpers::CreateComponent<USkeletalMeshComponent>(this, &MagazineMesh, "Magazine", Mesh, "magazine");
+	CHelpers::GetAsset(&asset, TEXT("/Script/Engine.SkeletalMesh'/Game/Items/Equipments/Weapons/Ranges/ARs/Assault_AK/SK_Rifle_Mesh/SK_Magazine.SK_Magazine'"));
+	MagazineMesh->SetSkeletalMesh(asset);
 
 	// Socket
 	{
@@ -23,7 +38,7 @@ ACWeapon_Range_AR::ACWeapon_Range_AR()
 	//Equip
 	{
 		HolsterSocketName = "Holster_AR";
-		CHelpers::GetAsset<UAnimMontage>(&EquipMontage, "");
+		CHelpers::GetAsset<UAnimMontage>(&EquipMontage, "/Script/Engine.AnimMontage'/Game/Characters/Runner/Animations/AR/Rifle_Equip_AK47_Montage.Rifle_Equip_AK47_Montage'");
 		EquipMontage_PlayRate = 2;
 		RightHandSocketName = "RightHand_AR";
 		LeftHandLocation = FVector(-35, 15.5f, 4);
@@ -44,11 +59,12 @@ ACWeapon_Range_AR::ACWeapon_Range_AR()
 
 	//Fire
 	{
-		RecoilAngle = 0.75f;
+		CHelpers::GetAsset<USoundWave>(&FireSound, "/Script/Engine.SoundWave'/Game/Items/Equipments/Weapons/Ranges/Sounds/AK_Shoot.AK_Shoot'");
+		RecoilAngle = 1.0f;
 		CHelpers::GetClass<UCameraShakeBase>(&CameraShakeClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/ARs/BP_CameraShake_AR.BP_CameraShake_AR_C'");
 		AutoFireInterval = 0.1f;
-		RecoilRate = 0.05f;
-		SpreadSpeed = 2.0f;
+		RecoilRate = 0.5f;
+		SpreadSpeed = 4.0f;
 		MaxSpreadAlignment = 2.0f;
 	}
 
@@ -60,7 +76,10 @@ ACWeapon_Range_AR::ACWeapon_Range_AR()
 	//Magazine
 	{
 		MaxMagazineCount = 30;
+		CHelpers::GetAsset<UAnimMontage>(&ReloadMontage, "/Script/Engine.AnimMontage'/Game/Characters/Runner/Animations/AR/Rifle_Reload_Montage.Rifle_Reload_Montage'");
+		ReloadMontage_PlayRate = 1.5f;
 		MagazineBoneName = "magazine";
+		CHelpers::GetClass<ACMagazine>(&MagazineClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/Magazines/BP_CMagazine_AK.BP_CMagazine_AK_C'");
 		MagazineSocketName = "AR_Magazine";
 	}
 
