@@ -67,6 +67,7 @@ public:
 
 #pragma region Fire
 	FORCEINLINE bool IsAutoFire() { return bAutoFire; }
+	FORCEINLINE bool IsFiring() { return bFiring; }
 	
 	bool CanFire();
 	void Begin_Fire();

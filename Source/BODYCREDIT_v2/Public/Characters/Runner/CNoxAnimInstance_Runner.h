@@ -38,6 +38,9 @@ protected:
 
 	UPROPERTY(blueprintreadonly, Category = "Movement")
 	bool bFalling = false;
+
+	UPROPERTY(blueprintreadonly, Category = "Movement")
+	bool bFiring = false;
 	
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Weapons")
 	EWeaponType WeaponType = EWeaponType::Max;
