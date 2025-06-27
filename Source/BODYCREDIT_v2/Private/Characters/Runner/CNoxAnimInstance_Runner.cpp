@@ -3,6 +3,7 @@
 #include "Characters/Runner/CNox_Runner.h"
 #include "Components/Runner/CWeaponComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Items/Equipments/Weapons/Ranges/CWeapon_Range.h"
 
 void UCNoxAnimInstance_Runner::NativeBeginPlay()
 {
@@ -40,10 +41,12 @@ void UCNoxAnimInstance_Runner::NativeUpdateAnimation(float DeltaSeconds)
 	Pitch = UKismetMathLibrary::FInterpTo(Pitch, OwnerCharacter->GetBaseAimRotation().Pitch, DeltaSeconds, 25);
 
 	CheckNull(Weapon);
-	
 	bInAim = Weapon->IsInAim();
 	bUseIK = (Weapon->IsUnarmedMode() == false);
 	LeftHandLocation = Weapon->GetLeftHandLocation();
+
+	CheckNull(Weapon->GetCurrWeapon());
+	bFiring = Weapon->GetCurrWeapon()->IsFiring();
 }
 
 bool UCNoxAnimInstance_Runner::IsRunning()

@@ -32,6 +32,8 @@ public:
 	FORCEINLINE bool IsAKMode() { return Type == EWeaponType::AK; }
 	FORCEINLINE bool IsM4Mode() { return Type == EWeaponType::M4; }
 	FORCEINLINE bool IsMagnumMode() { return Type == EWeaponType::M4; }
+	
+	ACWeapon_Range* GetCurrWeapon();
 
 	void SetUnarmedMode();
 	void SetAKMode();
@@ -99,7 +101,6 @@ private:
 
 	TArray<ACWeapon_Range*> Weapons;
 
-	ACWeapon_Range* GetCurrWeapon();
 
 	UPROPERTY(VisibleAnywhere)
 	EWeaponType Type = EWeaponType::Max;
