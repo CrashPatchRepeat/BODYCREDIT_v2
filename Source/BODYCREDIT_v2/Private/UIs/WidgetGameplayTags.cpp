@@ -26,6 +26,7 @@ namespace WidgetGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG(WidgetStack_Popup_Rooting, "WidgetStack.Popup.Rooting");
 	UE_DEFINE_GAMEPLAY_TAG(WidgetStack_Popup_BagPop, "WidgetStack.Popup.BagPop");
 	UE_DEFINE_GAMEPLAY_TAG(WidgetStack_Popup_ItemPop, "WidgetStack.Popup.ItemPop");
+	UE_DEFINE_GAMEPLAY_TAG(WidgetStack_Popup_Guide, "WidgetStack.Popup.Guide");
 						   
 	UE_DEFINE_GAMEPLAY_TAG(WidgetStack_GameMenu_Complete, "WidgetStack.GameMenu.Complete");
 	UE_DEFINE_GAMEPLAY_TAG(WidgetStack_GameMenu_Fail, "WidgetStack.GameMenu.Fail");
