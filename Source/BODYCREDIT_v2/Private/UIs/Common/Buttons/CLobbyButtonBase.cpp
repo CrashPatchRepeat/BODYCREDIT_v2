@@ -28,3 +28,4 @@ void UCLobbyButtonBase::NativePreConstruct()
 	Super::NativePreConstruct();
 	SetButtonText(ButtonDisplayText, BG_Size);
 }
+

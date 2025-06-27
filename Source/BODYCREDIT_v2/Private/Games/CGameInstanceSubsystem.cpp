@@ -32,7 +32,7 @@ void UCGameInstanceSubsystem::RegisterCreatedPrimaryLayoutWidget(UCWidget_Primar
 {
 	check(InCreatedWidget);
 	CreatedPrimaryLayout = InCreatedWidget;
-	WidgetDebug::Print(TEXT("Primary layout widget stored"));
+	// WidgetDebug::Print(TEXT("Primary layout widget stored"));
 }
 
 void UCGameInstanceSubsystem::PushSoftWidgetToStackAynsc(const FGameplayTag& InWidgetStackTag,

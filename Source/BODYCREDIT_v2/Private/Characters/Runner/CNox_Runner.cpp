@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/Runner/CMovementComponent.h"
 #include "Components/Runner/CWeaponComponent.h"
+#include "Components/Market/CMarketComponent.h"
 #include "InputMappingContext.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -178,6 +179,8 @@ void ACNox_Runner::InitCustomComponents()
 	CHelpers::CreateActorComponent<UCMovementComponent>(this, &MovementComponent, TEXT("MovementComponent"));
 	
 	CHelpers::CreateActorComponent<UCWeaponComponent>(this, &WeaponComponent, TEXT("WeaponComponent"));
+
+	CHelpers::CreateActorComponent<UCMarketComponent>(this, &MarketComponent, TEXT("MarketComp"));
 }
 #pragma endregion
 

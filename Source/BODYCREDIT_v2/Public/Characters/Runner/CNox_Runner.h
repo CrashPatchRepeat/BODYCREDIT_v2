@@ -9,6 +9,7 @@ class UCameraComponent;
 
 class UCMovementComponent;
 class UCWeaponComponent;
+class UCMarketComponent;
 
 class UInputMappingContext;
 
@@ -91,6 +92,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CustomComponents", meta = (AllowPrivateAccess = "true"))
 	UCWeaponComponent* WeaponComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CustomComponents", meta = (AllowPrivateAccess = "true"))
+	UCMarketComponent* MarketComponent;
 	
 	void InitCustomComponents();
 #pragma endregion

@@ -17,7 +17,7 @@ void UCWidget_PrimaryLayout::RegisterWidgetStack(UPARAM(meta=(Categories="Widget
 		{
 			// 스택을 등록
 			RegisteredWidgetStackMap.Add(InStackTag, InStack);
-			WidgetDebug::Print(TEXT("Widget Stack Registered under the tag") + InStackTag.ToString());
+			// WidgetDebug::Print(TEXT("Widget Stack Registered under the tag") + InStackTag.ToString());
 		}
 	}
 }
