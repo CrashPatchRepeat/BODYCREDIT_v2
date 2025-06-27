@@ -1,4 +1,4 @@
-#include "Items/Equipments/Weapons/Ranges/CWeapon_Range_M4.h"
+﻿#include "Items/Equipments/Weapons/Ranges/CWeapon_Range_M4.h"
 #include "Global.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -58,7 +58,7 @@ ACWeapon_Range_M4::ACWeapon_Range_M4()
 
 	// //UI
 	{
-		CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "/Script/UMGEditor.WidgetBlueprint'/Game/Wigets/Runner/WBP_CrossHair.WBP_CrossHair_C'");
+		CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "/Script/UMGEditor.WidgetBlueprint'/Game/UIs/Runner/WBP_CrossHair.WBP_CrossHair_C'");
 	}
 
 	//Magazine

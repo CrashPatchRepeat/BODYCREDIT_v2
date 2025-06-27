@@ -1,4 +1,4 @@
-#include "UIs/Common/Function/CFunctionLibrary.h"
+﻿#include "UIs/Common/Function/CFunctionLibrary.h"
 #include "UIs/Common/Settings/CDeveloperSettings.h"
 
 TSoftClassPtr<UCWidgetActivatableBase> UCFunctionLibrary::GetSoftWidgetClassByTag(UPARAM(meta=(Categories="WidgetStack")) FGameplayTag InWidgetTag)
