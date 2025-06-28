@@ -75,21 +75,21 @@ void UCMarketWidget::OnSelectArmClicked()
 {
 	// 팔 버튼 클릭 시 처리
 	CLog::Print("Select Arm Clicked");
-	DisplayMarketItems(EPlayerPart::Body, Btn_SelectArm);
+	DisplayMarketItems(EPlayerPart::Arm, Btn_SelectArm);
 }
 
 void UCMarketWidget::OnSelectLegClicked()
 {
 	// 다리 버튼 클릭 시 처리
 	CLog::Print("Select Leg Clicked");
-	DisplayMarketItems(EPlayerPart::Body, Btn_SelectLeg);
+	DisplayMarketItems(EPlayerPart::Leg, Btn_SelectLeg);
 }
 
 void UCMarketWidget::OnSelectBackpackClicked()
 {
 	// 백팩 버튼 클릭 시 처리
 	CLog::Print("Select Backpack Clicked");
-	DisplayMarketItems(EPlayerPart::Body, Btn_SelectBackpack);
+	DisplayMarketItems(EPlayerPart::Backpack, Btn_SelectBackpack);
 }
 
 void UCMarketWidget::UpdatePlayerGoldText(int32 NewGold)
