@@ -132,9 +132,9 @@ void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase*
 			ItemWidget->OwningMarket = this;
 			if (Items[i].Thumbnail)
 			{
-				FSlateBrush NewBrush;
+				FSlateBrush NewBrush= ItemWidget->GetItemBrush();
 				NewBrush.SetResourceObject(Items[i].Thumbnail);
-				NewBrush.ImageSize = ImageSize;
+				// NewBrush.ImageSize = ImageSize;
 				ItemWidget->SetItemImage(NewBrush, Items[i], InventoryComp);
 			}
 
@@ -146,6 +146,7 @@ void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase*
 				{
 					SlotH->SetHorizontalAlignment(HAlign_Center);
 					SlotH->SetVerticalAlignment(VAlign_Center);
+					SlotH->SetPadding(FMargin(20,0));
 				}
 			}
 		}
