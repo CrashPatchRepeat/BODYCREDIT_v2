@@ -137,3 +137,34 @@ void UCInventoryBaseComponent::ResetInventoryItem()
 		Item = nullptr;
 	}
 }
+
+TMap<UCItemObject*, FInventoryTile> UCInventoryBaseComponent::GetAllItems()
+{
+	TMap<UCItemObject*, FInventoryTile> AllItem;
+	for (int32 i = 0; i < Items.Num(); ++i)
+	{
+		if (IsValid(Items[i]))
+		{
+			if (!AllItem.Contains(Items[i]))
+			{
+				AllItem.Add(Items[i], IndexToTile(i));
+			}
+		}
+	}
+	return AllItem;
+}
+
+void UCInventoryBaseComponent::RemoveItem(UCItemObject* ItemObject)
+{
+	if (IsValid(ItemObject))
+	{
+		for (int i = 0; i < Items.Num(); ++i)
+		{
+			if (ItemObject == Items[i])
+			{
+				Items[i] = nullptr;
+				IsDirty = true;
+			}
+		}
+	}
+}

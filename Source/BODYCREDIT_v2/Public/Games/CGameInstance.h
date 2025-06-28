@@ -5,8 +5,12 @@
 #include "Items/Market/Base/CMarketStruct.h"
 #include "CGameInstance.generated.h"
 
+class UCMarketWidget;
 enum class ELootBoxTier : uint8;
 struct FItemData;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGoldChanged, int32, NewGold);
+DECLARE_MULTICAST_DELEGATE(FOnBack);
 
 /**
  * 
@@ -56,17 +60,28 @@ class BODYCREDIT_V2_API UCGameInstance : public UGameInstance
 public:
 	const int32 MaxNumKey = 1;	
 	const int32 NumKeySpawned = 0;
+
+	FOnGoldChanged OnGoldChanged;
+	int32 PlayerGold = 50000;
+
+	FOnBack OnBack;
 	
 	UPROPERTY()
 	FItemListByRarity CachedItemLists;
+
+	UPROPERTY()
+	TObjectPtr<UCMarketWidget> MarketUI;
 	
-	UDataTable* GetItemDataTable() const {return ItemDataTable;}
+	TObjectPtr<UDataTable> GetItemDataTable() const {return ItemDataTable;}
 	void InitItemCache(UDataTable* ItemDT);
 	EItemRarity GetRandomRarityByLootTier(ELootBoxTier Tier);
+
+	void SetPlayerGold(int32 NewGold);
 	
 private:
+	
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = "true"), Category = "DataTable")
-	UDataTable* ItemDataTable;
+	TObjectPtr<UDataTable> ItemDataTable;
 	UPROPERTY(EditDefaultsOnly, meta=(AllowPrivateAccess = "true"))
 	TMap<ELootBoxTier, FRarityProbability> LootBoxRarityMap;
 };

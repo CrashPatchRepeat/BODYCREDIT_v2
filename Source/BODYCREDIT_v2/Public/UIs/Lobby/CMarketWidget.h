@@ -6,8 +6,17 @@
 #include "UIs/Common/CWidgetActivatableBase.h"
 #include "CMarketWidget.generated.h"
 
+class UCGameInstance;
+class UImage;
+class UCInventoryGrid;
+class UCMarketComponent;
 class UCLobbyButtonBase;
 class UCommonButtonBase;
+class UCInventoryComponent;
+class UCommonUserWidget;
+class UVerticalBox;
+class ACGameState;
+class UTextBlock;
 
 /**
  * 
@@ -19,10 +28,31 @@ class BODYCREDIT_V2_API UCMarketWidget : public UCWidgetActivatableBase
 
 private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	class UVerticalBox* VerticalBox_MarketItem;
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> MarketItemWidget;
+	UVerticalBox* VerticalBox_MarketItem;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCInventoryGrid* InventoryGridWidget;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UImage* Image_SelectWeapon_Hovered;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* Txt_PlayerGold;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
+	FVector2D ImageSize = FVector2D(200, 150);
 	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCommonUserWidget> MarketItemWidget;
+	
+	UPROPERTY()
+	TObjectPtr<UCMarketComponent> MarketComp;
+	UPROPERTY()
+	TObjectPtr<UCInventoryComponent> InventoryComp;
+
+	UPROPERTY()
+	TObjectPtr<UImage> PreviousImage;
+	UPROPERTY()
+	TObjectPtr<UCGameInstance> GI;
+	UPROPERTY()
+	TObjectPtr<ACGameState> GS;
 	
 	virtual void NativeConstruct() override;
 	
@@ -38,4 +68,13 @@ private:
 	void OnSelectLegClicked();
 	UFUNCTION(BlueprintCallable)
 	void OnSelectBackpackClicked();
+
+	UFUNCTION()
+	void UpdatePlayerGoldText(int32 NewGold);
+
+	UFUNCTION()
+	void RemoveWidget();
+
+	void TurnOnPreviousImage();
+	void TurnOffPreviousImage();
 };

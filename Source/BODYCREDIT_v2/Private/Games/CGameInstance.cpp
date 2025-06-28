@@ -46,3 +46,9 @@ EItemRarity UCGameInstance::GetRandomRarityByLootTier(ELootBoxTier Tier)
 
 	return EItemRarity::Common;
 }
+
+void UCGameInstance::SetPlayerGold(int32 NewGold)
+{
+	PlayerGold = NewGold;
+	OnGoldChanged.Broadcast(NewGold);
+}

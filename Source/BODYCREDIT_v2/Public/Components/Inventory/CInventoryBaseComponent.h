@@ -4,6 +4,8 @@
 #include "Components/CBaseComponent.h"
 #include "CInventoryBaseComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryChanged);
+
 class UCItemObject;
 struct FInventoryTile;
 
@@ -16,6 +18,8 @@ class BODYCREDIT_V2_API UCInventoryBaseComponent : public UCBaseComponent
 	GENERATED_BODY()
 
 public:
+	FOnInventoryChanged InventoryChanged;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
 	int32 Columns = 4.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
@@ -26,6 +30,10 @@ public:
 	
 	bool TryAddItem(UCItemObject* ItemObject);
 	void ResetInventoryItem();
+
+	TMap<UCItemObject*, FInventoryTile> GetAllItems();
+
+	void RemoveItem(UCItemObject* ItemObject);
 
 private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(AllowPrivateAccess=true))

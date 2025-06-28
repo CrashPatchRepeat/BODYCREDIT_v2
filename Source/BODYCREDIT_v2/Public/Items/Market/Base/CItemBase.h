@@ -8,6 +8,7 @@ class UCapsuleComponent;
 class UCItemObject;
 class UCLootInventoryComponent;
 class UCItemStrategy;
+class ACMainGM;
 
 UCLASS()
 class BODYCREDIT_V2_API ACItemBase : public AActor
@@ -30,16 +31,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Height = 1.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UDataTable* ItemDataTable;
+	TObjectPtr<UDataTable> ItemDataTable;
 
 	UPROPERTY()
-	UCItemObject* ItemObject;
+	TObjectPtr<UCItemObject> ItemObject;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	class ACMainGM* GameMode;
+	ACMainGM* GameMode;
 
 	
 

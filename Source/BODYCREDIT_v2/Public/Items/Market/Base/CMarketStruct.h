@@ -13,35 +13,35 @@ struct FItemRarityIcon
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* BlankIcon;
+	TObjectPtr<UMaterialInterface> BlankIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* CommonIcon;
+	TObjectPtr<UMaterialInterface> CommonIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* RareIcon;
+	TObjectPtr<UMaterialInterface> RareIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* EpicIcon;
+	TObjectPtr<UMaterialInterface> EpicIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* LegendaryIcon;
+	TObjectPtr<UMaterialInterface> LegendaryIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* BlankRotatedIcon;
+	TObjectPtr<UMaterialInterface> BlankRotatedIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* CommonRotatedIcon;
+	TObjectPtr<UMaterialInterface> CommonRotatedIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* RareRotatedIcon;
+	TObjectPtr<UMaterialInterface> RareRotatedIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* EpicRotatedIcon;
+	TObjectPtr<UMaterialInterface> EpicRotatedIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* LegendaryRotatedIcon;
+	TObjectPtr<UMaterialInterface> LegendaryRotatedIcon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* BlankThumbnail;
+	TObjectPtr<UMaterialInterface> BlankThumbnail;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* CommonThumbnail;
+	TObjectPtr<UMaterialInterface> CommonThumbnail;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* RareThumbnail;
+	TObjectPtr<UMaterialInterface> RareThumbnail;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* EpicThumbnail;
+	TObjectPtr<UMaterialInterface> EpicThumbnail;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UMaterialInterface* LegendaryThumbnail;
+	TObjectPtr<UMaterialInterface> LegendaryThumbnail;
 
 	FItemRarityIcon(): BlankIcon(nullptr), CommonIcon(nullptr), RareIcon(nullptr), EpicIcon(nullptr),
 	                   LegendaryIcon(nullptr), BlankRotatedIcon(nullptr), CommonRotatedIcon(nullptr),
@@ -59,15 +59,15 @@ struct FItemRarityImages
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UTexture2D* BlankImage;
+	TObjectPtr<UTexture2D> BlankImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UTexture2D* CommonImage;
+	TObjectPtr<UTexture2D> CommonImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UTexture2D* RareImage;
+	TObjectPtr<UTexture2D> RareImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UTexture2D* EpicImage;
+	TObjectPtr<UTexture2D> EpicImage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rarity")
-	UTexture2D* LegendaryImage;
+	TObjectPtr<UTexture2D> LegendaryImage;
 
 	FItemRarityImages(): BlankImage(nullptr), CommonImage(nullptr), RareImage(nullptr), EpicImage(nullptr),
 	                     LegendaryImage(nullptr)
@@ -132,77 +132,84 @@ struct FItemData : public FTableRowBase
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 ID;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UStaticMesh* Mesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FIntPoint Dimensions;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Quantity;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	bool Stackable;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UTexture2D* Thumbnail;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Index;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	EItemRarity Rarity;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FItemRarityImages RarityImages;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	int32 Price;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FString Description;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FItemRarityIcon IconStruct;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UMaterialInterface* Icon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UMaterialInterface* RotatedIcon;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	UMaterialInterface* EquipedThumbnail;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	// 포인터 타입들 (8바이트 정렬)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "2"))
+	TObjectPtr<UStaticMesh> Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "4"))
+	TObjectPtr<UTexture2D> Thumbnail;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "10"))
+	TObjectPtr<UMaterialInterface> Icon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "11"))
+	TObjectPtr<UMaterialInterface> RotatedIcon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "12"))
+	TObjectPtr<UMaterialInterface> EquipedThumbnail;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "18"))
+	TObjectPtr<USkeletalMesh> SkeletalMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "13"))
 	TSubclassOf<ACItemBase> ItemClass;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	bool Rotated;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FIntPoint StartPosition;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	EPlayerPart ItemType;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	float Weight;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	USkeletalMesh* SkeletalMesh;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	
+	// 구조체들
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "6"))
+	FItemRarityImages RarityImages;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "9"))
+	FItemRarityIcon IconStruct;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "19"))
 	FItemStatIncrease StatIncrease;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	FName ItemName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
+	
+	// 정수 타입들 (4바이트 정렬)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "1"))
+	int32 ID;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "7"))
+	int32 Price;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "3"))
+	FIntPoint Dimensions;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "15"))
+	FIntPoint StartPosition;
+	
+	// 열거형들 (1바이트)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "5"))
+	EItemRarity Rarity;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "16"))
+	EPlayerPart ItemType;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "21"))
 	EWeaponType WeaponType;
+	
+	// 부울 타입 (1바이트)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "14"))
+	bool Rotated;
+	
+	// 문자열과 이름 (마지막에 배치)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "8"))
+	FString Description;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "20"))
+	FName ItemName;
+	
+	// 실수 타입 (4바이트 정렬)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item", meta = (DisplayPriority = "17"))
+	float Weight;
 
 	FItemData()
-		: ID(0)
-		  , Mesh(nullptr)
-		  , Dimensions(1, 1)
-		  , Quantity(0)
-		  , Stackable(false)
+		: Mesh(nullptr)
 		  , Thumbnail(nullptr)
-		  , Index(-1)
-		  , Rarity(EItemRarity::Common)
-		  , RarityImages(FItemRarityImages())
-		  , Price(0)
-		  , Description(TEXT(""))
 		  , Icon(nullptr)
 		  , RotatedIcon(nullptr)
-		  , ItemClass(nullptr)
-		  , Rotated(false)
-		  , StartPosition(0, 0)
-		  , ItemType(EPlayerPart::Basic)
-		  , Weight(1)
+		  , EquipedThumbnail(nullptr)
 		  , SkeletalMesh(nullptr)
+		  , ItemClass(nullptr)
+		  , RarityImages(FItemRarityImages())
+		  , IconStruct(FItemRarityIcon())
 		  , StatIncrease(FItemStatIncrease())
+		  , ID(0)
+		  , Price(0)
+		  , Dimensions(1, 1)
+		  , StartPosition(0, 0)
+		  , Rarity(EItemRarity::Common)
+		  , ItemType(EPlayerPart::Basic)
+		  , WeaponType(EWeaponType::Max)
+		  , Rotated(false)
+		  , Description(TEXT(""))
 		  , ItemName(NAME_None)
+		  , Weight(1)
 	{
 	}
 };
