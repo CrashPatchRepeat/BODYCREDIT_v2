@@ -18,6 +18,8 @@ class UVerticalBox;
 class ACGameState;
 class UTextBlock;
 
+enum class EPlayerPart : uint8;
+
 /**
  * 
  */
@@ -28,11 +30,22 @@ class BODYCREDIT_V2_API UCMarketWidget : public UCWidgetActivatableBase
 
 private:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UVerticalBox* VerticalBox_MarketItem;
+	TObjectPtr<UVerticalBox> VerticalBox_MarketItem;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCInventoryGrid* InventoryGridWidget;
+	TObjectPtr<UCInventoryGrid> InventoryGridWidget;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UImage* Image_SelectWeapon_Hovered;
+	TObjectPtr<UCLobbyButtonBase> Btn_SelectWeapon;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UCLobbyButtonBase> Btn_SelectHead;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UCLobbyButtonBase> Btn_SelectBody;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UCLobbyButtonBase> Btn_SelectArm;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UCLobbyButtonBase> Btn_SelectLeg;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	TObjectPtr<UCLobbyButtonBase> Btn_SelectBackpack;
+	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* Txt_PlayerGold;
 
@@ -48,7 +61,7 @@ private:
 	TObjectPtr<UCInventoryComponent> InventoryComp;
 
 	UPROPERTY()
-	TObjectPtr<UImage> PreviousImage;
+	TObjectPtr<UCLobbyButtonBase> PreviousButton;
 	UPROPERTY()
 	TObjectPtr<UCGameInstance> GI;
 	UPROPERTY()
@@ -74,7 +87,7 @@ private:
 
 	UFUNCTION()
 	void RemoveWidget();
-
-	void TurnOnPreviousImage();
-	void TurnOffPreviousImage();
+	
+	UFUNCTION()
+	void DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase* PressButton);
 };

@@ -33,8 +33,6 @@ void UCMarketWidget::NativeConstruct()
 	MarketComp = PlayerCharacter->GetComponentByClass<UCMarketComponent>();
 
 	OnSelectWeaponClicked();
-	PreviousImage = Image_SelectWeapon_Hovered;
-	PreviousImage->SetVisibility(ESlateVisibility::Visible);
 
 	GS = GetWorld()->GetGameState<ACGameState>();
 
@@ -55,31 +53,76 @@ void UCMarketWidget::OnSelectWeaponClicked()
 {
 	// 무기 버튼 클릭 시 처리
 	CLog::Print("Select Weapon Clicked");
-	if (!MarketComp || !MarketItemWidget || !VerticalBox_MarketItem)
+	DisplayMarketItems(EPlayerPart::Weapon1, Btn_SelectWeapon);
+}
+
+void UCMarketWidget::OnSelectHeadClicked()
+{
+	// 머리 버튼 클릭 시 처리
+	CLog::Print("Select Head Clicked");
+	DisplayMarketItems(EPlayerPart::Head, Btn_SelectHead);
+}
+
+
+void UCMarketWidget::OnSelectBodyClicked()
+{
+	// 몸통 버튼 클릭 시 처리
+	CLog::Print("Select Body Clicked");
+	DisplayMarketItems(EPlayerPart::Body, Btn_SelectBody);
+}
+
+void UCMarketWidget::OnSelectArmClicked()
+{
+	// 팔 버튼 클릭 시 처리
+	CLog::Print("Select Arm Clicked");
+	DisplayMarketItems(EPlayerPart::Body, Btn_SelectArm);
+}
+
+void UCMarketWidget::OnSelectLegClicked()
+{
+	// 다리 버튼 클릭 시 처리
+	CLog::Print("Select Leg Clicked");
+	DisplayMarketItems(EPlayerPart::Body, Btn_SelectLeg);
+}
+
+void UCMarketWidget::OnSelectBackpackClicked()
+{
+	// 백팩 버튼 클릭 시 처리
+	CLog::Print("Select Backpack Clicked");
+	DisplayMarketItems(EPlayerPart::Body, Btn_SelectBackpack);
+}
+
+void UCMarketWidget::UpdatePlayerGoldText(int32 NewGold)
+{
+	if (Txt_PlayerGold)
 	{
-		return;
+		Txt_PlayerGold->SetText(FText::AsNumber(NewGold));
 	}
-	if (PreviousImage == Image_SelectWeapon_Hovered) return;
-	TurnOffPreviousImage();
-	PreviousImage = Image_SelectWeapon_Hovered;
-	TurnOnPreviousImage();
+}
+
+void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase* PressButton)
+{
+	if (!MarketComp || !MarketItemWidget || !VerticalBox_MarketItem)
+		return;
 	
+	if (PreviousButton == PressButton) return;
+	PreviousButton = PressButton;
 
 	VerticalBox_MarketItem->ClearChildren();
 
-	TArray<FItemData> Weapons = MarketComp->GetMarketItems(EPlayerPart::Weapon1);
+	TArray<FItemData> Items = MarketComp->GetMarketItems(ItemType);
 
 	const int32 NumPerRow = 2;
 	TArray<UHorizontalBox*> RowBoxes;
 
-	const int32 NumRows = FMath::CeilToInt((float)Weapons.Num() / NumPerRow);
+	const int32 NumRows = FMath::CeilToInt((float)Items.Num() / NumPerRow);
 	for (int32 Row = 0; Row < NumRows; ++Row)
 	{
 		UHorizontalBox* NewRow = NewObject<UHorizontalBox>(this, UHorizontalBox::StaticClass());
 		RowBoxes.Add(NewRow);
 	}
 
-	for (int32 i = 0; i < Weapons.Num(); ++i)
+	for (int32 i = 0; i < Items.Num(); ++i)
 	{
 		int32 RowIndex = i / NumPerRow;
 
@@ -87,19 +130,19 @@ void UCMarketWidget::OnSelectWeaponClicked()
 		if (ItemWidget)
 		{
 			ItemWidget->OwningMarket = this;
-			if (Weapons[i].Thumbnail)
+			if (Items[i].Thumbnail)
 			{
 				FSlateBrush NewBrush;
-				NewBrush.SetResourceObject(Weapons[i].Thumbnail);
+				NewBrush.SetResourceObject(Items[i].Thumbnail);
 				NewBrush.ImageSize = ImageSize;
-				ItemWidget->SetItemImage(NewBrush, Weapons[i], InventoryComp);
+				ItemWidget->SetItemImage(NewBrush, Items[i], InventoryComp);
 			}
 
 			UHorizontalBox* TargetRow = RowBoxes[RowIndex];
 			if (TargetRow)
 			{
 				UHorizontalBoxSlot* SlotH = TargetRow->AddChildToHorizontalBox(ItemWidget);
-				if (Slot)
+				if (SlotH)
 				{
 					SlotH->SetHorizontalAlignment(HAlign_Center);
 					SlotH->SetVerticalAlignment(VAlign_Center);
@@ -121,56 +164,7 @@ void UCMarketWidget::OnSelectWeaponClicked()
 	}
 }
 
-void UCMarketWidget::OnSelectHeadClicked()
-{
-	// 머리 버튼 클릭 시 처리
-	CLog::Print("Select Head Clicked");
-}
-
-void UCMarketWidget::OnSelectBodyClicked()
-{
-	// 몸통 버튼 클릭 시 처리
-	CLog::Print("Select Body Clicked");
-}
-
-void UCMarketWidget::OnSelectArmClicked()
-{
-	// 팔 버튼 클릭 시 처리
-	CLog::Print("Select Arm Clicked");
-}
-
-void UCMarketWidget::OnSelectLegClicked()
-{
-	// 다리 버튼 클릭 시 처리
-	CLog::Print("Select Leg Clicked");
-}
-
-void UCMarketWidget::OnSelectBackpackClicked()
-{
-	// 백팩 버튼 클릭 시 처리
-	CLog::Print("Select Backpack Clicked");
-}
-
-void UCMarketWidget::UpdatePlayerGoldText(int32 NewGold)
-{
-	if (Txt_PlayerGold)
-	{
-		Txt_PlayerGold->SetText(FText::AsNumber(NewGold));
-	}
-}
 
 void UCMarketWidget::RemoveWidget()
 {
-}
-
-void UCMarketWidget::TurnOnPreviousImage()
-{
-	if (PreviousImage)
-		PreviousImage->SetVisibility(ESlateVisibility::Visible);
-}
-
-void UCMarketWidget::TurnOffPreviousImage()
-{
-	if (PreviousImage)
-		PreviousImage->SetVisibility(ESlateVisibility::Hidden);
 }
