@@ -21,9 +21,9 @@ public:
 	FOnInventoryChanged InventoryChanged;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
-	int32 Columns = 4.f;
+	int32 Columns = 10.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
-	int32 Rows = 5.f;
+	int32 Rows = 15.f;
 	
 	UPROPERTY()
 	TMap<int32, UCItemObject*> IndexToObject;
@@ -33,6 +33,10 @@ public:
 
 	TMap<UCItemObject*, FInventoryTile> GetAllItems();
 
+	int32 TileToIndex(FInventoryTile& Tile);
+
+	bool IsRoomAvailable(UCItemObject* ItemObject, int32 TopLeftIndex);
+	
 	void RemoveItem(UCItemObject* ItemObject);
 
 private:
@@ -40,12 +44,10 @@ private:
 	TArray<UCItemObject*> Items;
 	
 	bool IsDirty = false;
-
-	bool IsRoomAvailable(UCItemObject* ItemObject, int32 TopLeftIndex);
+	
 	FInventoryTile IndexToTile(int32 Index);
 	bool IsTileValid(FInventoryTile& Tile);
-	UCItemObject* GetItemAtIndex(int32 Index);
-	int32 TileToIndex(FInventoryTile& Tile);
+	UCItemObject* GetItemAtIndex(int32 Index);	
 
 	void AddItemAt(UCItemObject* ItemObject, int32 TopLeftIndex);
 };

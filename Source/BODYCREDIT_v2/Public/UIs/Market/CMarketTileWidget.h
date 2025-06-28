@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -12,6 +10,8 @@ class UCInventoryBaseComponent;
 class UCMarketWidget;
 class UImage;
 class UVerticalBox;
+class UButton;
+class UCGameInstance;
 
 /**
  * 
@@ -26,7 +26,8 @@ public:
 	TObjectPtr<UCMarketWidget> OwningMarket;
 
 	FSlateBrush GetItemBrush() const;
-	void SetItemImage(FSlateBrush NewBrush, FItemData InItemData, TObjectPtr<UCInventoryBaseComponent> InInventoryComponent);
+	void SetItemImage(FSlateBrush NewBrush, FItemData InItemData,
+	                  TObjectPtr<UCInventoryBaseComponent> InInventoryComponent);
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -35,9 +36,15 @@ private:
 	TObjectPtr<UCommonTextBlock> Txt_Name;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCommonTextBlock> Txt_Price;
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UVerticalBox> VerticalBox_ItemData;
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> Btn_BuyItem;
 
+	UPROPERTY()
+	TObjectPtr<UCGameInstance> GI;
+
+	UPROPERTY(BlueprintreadOnly, meta=(AllowPrivateAccess=true))
 	FItemData ItemData;
 
 	UPROPERTY()
@@ -45,6 +52,9 @@ private:
 
 	virtual void NativeConstruct() override;
 	void SetItemDescription();
-	
+
 	FString FormatNumberWithCommas(int32 Number);
+
+	UFUNCTION(BlueprintCallable)
+	bool OnBuyItemClickEvent();
 };

@@ -50,7 +50,7 @@ private:
 	UTextBlock* Txt_PlayerGold;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta=(AllowPrivateAccess=true))
-	FVector2D ImageSize = FVector2D(200, 150);
+	FVector2D ImageSize = FVector2D(150, 120);
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UCommonUserWidget> MarketItemWidget;
@@ -83,7 +83,7 @@ private:
 	void OnSelectBackpackClicked();
 
 	UFUNCTION()
-	void UpdatePlayerGoldText(int32 NewGold);
+	void UpdatePlayerGoldText(const int32 NewGold);
 
 	UFUNCTION()
 	void RemoveWidget();

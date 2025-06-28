@@ -21,9 +21,9 @@ void UCMarketWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	auto lpc=UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	auto PC=Cast<ACNoxController>(lpc);
-	ACNox_Runner* PlayerCharacter = Cast<ACNox_Runner>(PC->GetPawn());
+	APlayerController* lpc=UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	ACNoxController* PC=Cast<ACNoxController>(lpc);
+	const ACNox_Runner* PlayerCharacter = Cast<ACNox_Runner>(PC->GetPawn());
 	InventoryComp = PlayerCharacter->GetComponentByClass<UCInventoryComponent>();
 
 	InventoryGridWidget->InitInventory(InventoryComp, InventoryComp->GetInventoryTileSize());
@@ -35,11 +35,11 @@ void UCMarketWidget::NativeConstruct()
 	OnSelectWeaponClicked();
 
 	GS = GetWorld()->GetGameState<ACGameState>();
-
 	GI = Cast<UCGameInstance>(GetGameInstance());
+	
 	if (GI) {
 		GI->MarketUI = this;
-		GI->OnGoldChanged.RemoveDynamic(this, &UCMarketWidget::UpdatePlayerGoldText);
+		GI->OnGoldChanged.Clear();
 		GI->OnGoldChanged.AddDynamic(this, &UCMarketWidget::UpdatePlayerGoldText);
 		GI->SetPlayerGold(GI->PlayerGold);
 
@@ -52,14 +52,12 @@ void UCMarketWidget::NativeConstruct()
 void UCMarketWidget::OnSelectWeaponClicked()
 {
 	// 무기 버튼 클릭 시 처리
-	CLog::Print("Select Weapon Clicked");
 	DisplayMarketItems(EPlayerPart::Weapon1, Btn_SelectWeapon);
 }
 
 void UCMarketWidget::OnSelectHeadClicked()
 {
 	// 머리 버튼 클릭 시 처리
-	CLog::Print("Select Head Clicked");
 	DisplayMarketItems(EPlayerPart::Head, Btn_SelectHead);
 }
 
@@ -67,37 +65,30 @@ void UCMarketWidget::OnSelectHeadClicked()
 void UCMarketWidget::OnSelectBodyClicked()
 {
 	// 몸통 버튼 클릭 시 처리
-	CLog::Print("Select Body Clicked");
 	DisplayMarketItems(EPlayerPart::Body, Btn_SelectBody);
 }
 
 void UCMarketWidget::OnSelectArmClicked()
 {
 	// 팔 버튼 클릭 시 처리
-	CLog::Print("Select Arm Clicked");
 	DisplayMarketItems(EPlayerPart::Arm, Btn_SelectArm);
 }
 
 void UCMarketWidget::OnSelectLegClicked()
 {
 	// 다리 버튼 클릭 시 처리
-	CLog::Print("Select Leg Clicked");
 	DisplayMarketItems(EPlayerPart::Leg, Btn_SelectLeg);
 }
 
 void UCMarketWidget::OnSelectBackpackClicked()
 {
 	// 백팩 버튼 클릭 시 처리
-	CLog::Print("Select Backpack Clicked");
 	DisplayMarketItems(EPlayerPart::Backpack, Btn_SelectBackpack);
 }
 
-void UCMarketWidget::UpdatePlayerGoldText(int32 NewGold)
+void UCMarketWidget::UpdatePlayerGoldText(const int32 NewGold)
 {
-	if (Txt_PlayerGold)
-	{
-		Txt_PlayerGold->SetText(FText::AsNumber(NewGold));
-	}
+	if (Txt_PlayerGold) Txt_PlayerGold->SetText(FText::AsNumber(NewGold));
 }
 
 void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase* PressButton)
@@ -115,7 +106,7 @@ void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase*
 	const int32 NumPerRow = 2;
 	TArray<UHorizontalBox*> RowBoxes;
 
-	const int32 NumRows = FMath::CeilToInt((float)Items.Num() / NumPerRow);
+	const int32 NumRows = FMath::CeilToInt(static_cast<float>(Items.Num()) / NumPerRow);
 	for (int32 Row = 0; Row < NumRows; ++Row)
 	{
 		UHorizontalBox* NewRow = NewObject<UHorizontalBox>(this, UHorizontalBox::StaticClass());
@@ -126,7 +117,7 @@ void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase*
 	{
 		int32 RowIndex = i / NumPerRow;
 
-		UCMarketTileWidget* ItemWidget = CreateWidget<UCMarketTileWidget>(this, MarketItemWidget);
+		UCMarketTileWidget* ItemWidget = CreateWidget<UCMarketTileWidget>(Cast<ACNoxController>(GetOwningPlayerPawn()->GetController()), MarketItemWidget);
 		if (ItemWidget)
 		{
 			ItemWidget->OwningMarket = this;
@@ -134,7 +125,6 @@ void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase*
 			{
 				FSlateBrush NewBrush= ItemWidget->GetItemBrush();
 				NewBrush.SetResourceObject(Items[i].Thumbnail);
-				// NewBrush.ImageSize = ImageSize;
 				ItemWidget->SetItemImage(NewBrush, Items[i], InventoryComp);
 			}
 
@@ -157,10 +147,7 @@ void UCMarketWidget::DisplayMarketItems(EPlayerPart ItemType, UCLobbyButtonBase*
 		if (RowBox)
 		{
 			UVerticalBoxSlot* VSlot = VerticalBox_MarketItem->AddChildToVerticalBox(RowBox);
-			if (VSlot)
-			{
-				VSlot->SetHorizontalAlignment(HAlign_Fill);
-			}
+			if (VSlot) VSlot->SetHorizontalAlignment(HAlign_Fill);
 		}
 	}
 }

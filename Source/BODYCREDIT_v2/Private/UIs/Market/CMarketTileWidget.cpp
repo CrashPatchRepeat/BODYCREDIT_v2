@@ -5,11 +5,14 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
+#include "Games/CGameInstance.h"
 #include "UIs/Common/Text/CCommonTextBase.h"
 
 void UCMarketTileWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	GI = Cast<UCGameInstance>(GetGameInstance());
 
 	if (Txt_Name)
 		Txt_Name->SetText(FText::FromName(ItemData.ItemName));
@@ -18,7 +21,6 @@ void UCMarketTileWidget::NativeConstruct()
 		FString FormattedPrice = FormatNumberWithCommas(ItemData.Price);
 		Txt_Price->SetText(FText::FromString(FString::Printf(TEXT("%s G"), *FormattedPrice)));
 	}
-	// SetItemDescription();
 }
 
 FSlateBrush UCMarketTileWidget::GetItemBrush() const
@@ -40,7 +42,7 @@ FString UCMarketTileWidget::FormatNumberWithCommas(int32 Number)
 {
 	FString NumberString = FString::FromInt(Number);
 	FString Result;
-	
+
 	for (int32 i = 0; i < NumberString.Len(); ++i)
 	{
 		if (i > 0 && (NumberString.Len() - i) % 3 == 0)
@@ -49,8 +51,13 @@ FString UCMarketTileWidget::FormatNumberWithCommas(int32 Number)
 		}
 		Result += NumberString[i];
 	}
-	
+
 	return Result;
+}
+
+bool UCMarketTileWidget::OnBuyItemClickEvent()
+{
+	return ItemData.Price > GI->PlayerGold ? false : true;
 }
 
 void UCMarketTileWidget::SetItemDescription()
@@ -89,10 +96,4 @@ void UCMarketTileWidget::SetItemDescription()
 	AddStatText(TEXT("Accuracy"), Stat.Accuracy);
 	AddStatText(TEXT("Carry Weight"), Stat.CarryWeight);
 	AddStatText(TEXT("Humanity"), Stat.Humanity);
-
-	// if (!bHasStat && VerticalBox_ItemNamePrice)
-	// {
-	// 	if (UCanvasPanelSlot* CanvasSlot = Cast<UCanvasPanelSlot>(VerticalBox_ItemNamePrice->Slot))
-	// 		CanvasSlot->SetPosition(FVector2D(125.f, 0));
-	// }
 }
