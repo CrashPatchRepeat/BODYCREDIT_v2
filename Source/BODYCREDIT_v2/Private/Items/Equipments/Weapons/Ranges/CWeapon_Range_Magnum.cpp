@@ -1,4 +1,4 @@
-#include "Items/Equipments/Weapons/Ranges/CWeapon_Range_Magnum.h"
+﻿#include "Items/Equipments/Weapons/Ranges/CWeapon_Range_Magnum.h"
 #include "Global.h"
 #include "Camera/CameraShakeBase.h"
 #include "Characters/Runner/CNox_Runner.h"
@@ -46,7 +46,7 @@ ACWeapon_Range_Magnum::ACWeapon_Range_Magnum()
 
 	//Magazine
 	{
-		MaxMagazineCount = 5;
+		MaxMagazineCount = 6;
 		// CHelpers::GetAsset<UAnimMontage>(&ReloadMontage, "AnimMontage'/Game/Character/Animations/Pistol_Reload_Montage.Pistol_Reload_Montage'");
 		ReloadMontage_PlayRate = 1.5f;
 		MagazineBoneName = NAME_None;
@@ -67,7 +67,17 @@ ACWeapon_Range_Magnum::ACWeapon_Range_Magnum()
 void ACWeapon_Range_Magnum::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	const int32 Num = Mesh->GetNumMaterials();
+	for (int32 i = 0; i < Num; ++i)
+	{
+		if (UMaterialInstanceDynamic* Dyn = Mesh->CreateAndSetMaterialInstanceDynamic(i))
+		{
+			MaterialMIDs.Add(Dyn);
+		}
+	}
+	Load_Magazine();
+	
 	Mesh->SetVisibility(false);
 }
 
@@ -115,4 +125,42 @@ void ACWeapon_Range_Magnum::End_Aim()
 	CHelpers::AttachTo(this, OwnerCharacter->GetMesh(), RightHandSocketName);
 
 	CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter)->OnWeaponAim_Arms_End.Broadcast();
+}
+
+void ACWeapon_Range_Magnum::OnFiring()
+{
+	Super::OnFiring();
+	
+	// Decrement phase for each shot
+	AmmoPhase += 0.09f;
+
+	for (auto* MID : MaterialMIDs)
+	{
+		MID->SetScalarParameterValue(FName("AmmoPhase"), AmmoPhase);
+	}
+}
+
+void ACWeapon_Range_Magnum::SyncSightAmmoCount()
+{
+	// Normalize ammo count to [0,1] phase
+	float maxAmmo = static_cast<float>(MaxMagazineCount);
+	float phase = (maxAmmo > 0.f) ? static_cast<float>(CurrMagazineCount) / maxAmmo : 0.f;
+
+	for (auto* MID : MaterialMIDs)
+	{
+		MID->SetScalarParameterValue(FName("AmmoPhase"), phase);
+	}
+}
+
+void ACWeapon_Range_Magnum::Load_Magazine()
+{
+	Super::Load_Magazine();
+	
+	// Reset phase when reloading
+	AmmoPhase = 0.54f;;
+
+	for (auto* MID : MaterialMIDs)
+	{
+		MID->SetScalarParameterValue(FName("AmmoPhase"), AmmoPhase);
+	}
 }

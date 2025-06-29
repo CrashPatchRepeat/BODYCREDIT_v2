@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -31,4 +31,25 @@ private:
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	class UNiagaraSystem* BloodEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	class UMaterialInterface* BulletDecalMaterial;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	float DecalSize = 5.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Effect")
+	float DecalLifeTime = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit")
+	UMaterialInstanceConstant* HitDecal;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit")
+	UParticleSystem* HitParticle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit")
+	float Damage = 20.0f;
 };
