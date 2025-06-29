@@ -85,7 +85,8 @@ public:
 
 	void Eject_Magazine();
 	void Spawn_Magazine();
-	void Load_Magazine();
+	virtual void Load_Magazine();
+	virtual void SyncSightAmmoCount();
 	void End_Reload();
 #pragma endregion
 	
@@ -174,6 +175,11 @@ protected:
 	
 	bool bAutoFire = true;
 	bool bFiring = false;
+
+	FTimerHandle AutoFireHandle;
+	
+	UFUNCTION()
+	virtual void OnFiring();
 #pragma endregion
 
 #pragma region Hit
@@ -228,12 +234,5 @@ private:
 #pragma region Aim
 	UFUNCTION()
 	void OnAiming(float Output);
-#pragma endregion
-
-#pragma region Fire
-	FTimerHandle AutoFireHandle;
-	
-	UFUNCTION()
-	void OnFiring();
 #pragma endregion
 };

@@ -12,7 +12,7 @@ void UCWeaponComponent::SetupInputBindings(UEnhancedInputComponent* InEnhancedIn
 	CheckNull(InEnhancedInputComponent);
 
 	InEnhancedInputComponent->BindAction(IA_WeaponSlot1, ETriggerEvent::Started, this, &UCWeaponComponent::SetAKMode);
-	InEnhancedInputComponent->BindAction(IA_WeaponSlot2, ETriggerEvent::Started, this, &UCWeaponComponent::SetM4Mode);
+	InEnhancedInputComponent->BindAction(IA_WeaponSlot2, ETriggerEvent::Started, this, &UCWeaponComponent::SetMagnumMode);
 
 	InEnhancedInputComponent->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::Begin_Fire);
 	InEnhancedInputComponent->BindAction(IA_Action, ETriggerEvent::Completed, this, &UCWeaponComponent::End_Fire);
