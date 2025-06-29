@@ -4,13 +4,14 @@
 #include "Characters/Runner/CNox_Runner.h"
 #include "Widgets/Runners/CUserWidget_CrossHair.h"
 #include "Components/Runner/CWeaponComponent.h"
+#include "Items/Equipments/Weapons/Ranges/CMagazine.h"
 
 ACWeapon_Range_Magnum::ACWeapon_Range_Magnum()
 {
 	//Equip
 	{
-		HolsterSocketName = NAME_None;
-		// CHelpers::GetAsset<UAnimMontage>(&EquipMontage, "");
+		HolsterSocketName = "Holster_Pistol";
+		 CHelpers::GetAsset<UAnimMontage>(&EquipMontage, "/Script/Engine.AnimMontage'/Game/Characters/Runner/Animations/Pistol/Runner_Pistol_Equip_Montage.Runner_Pistol_Equip_Montage'");
 		EquipMontage_PlayRate = 2;
 		RightHandSocketName = "RightHand_Pistol";
 		LeftHandLocation = FVector(0, 12.5f, 0);
@@ -31,6 +32,7 @@ ACWeapon_Range_Magnum::ACWeapon_Range_Magnum()
 
 	//Fire
 	{
+		CHelpers::GetAsset<USoundWave>(&FireSound, "/Script/Engine.SoundWave'/Game/Items/Equipments/Weapons/Ranges/Sounds/Pistol_Shoot.Pistol_Shoot'");
 		RecoilAngle = 1.5f;
 		// CHelpers::GetClass<UCameraShakeBase>(&CameraShakeClass, "Blueprint'/Game/Weapons/BP_CameraShake_Pistol.BP_CameraShake_Pistol_C'");
 		AutoFireInterval = 0.3f;
@@ -41,16 +43,16 @@ ACWeapon_Range_Magnum::ACWeapon_Range_Magnum()
 
 	//UI
 	{
-		// CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "WidgetBlueprint'/Game/Widgets/WB_CrossHair.WB_CrossHair_C'");
+		CHelpers::GetClass<UCUserWidget_CrossHair>(&CrossHairClass, "/Script/UMGEditor.WidgetBlueprint'/Game/UIs/Runner/WBP_CrossHair.WBP_CrossHair_C'");
 	}
 
 	//Magazine
 	{
 		MaxMagazineCount = 6;
-		// CHelpers::GetAsset<UAnimMontage>(&ReloadMontage, "AnimMontage'/Game/Character/Animations/Pistol_Reload_Montage.Pistol_Reload_Montage'");
+		 CHelpers::GetAsset<UAnimMontage>(&ReloadMontage, "/Script/Engine.AnimMontage'/Game/Characters/Runner/Animations/Pistol/Runner_Pistol_Reload_Montage.Runner_Pistol_Reload_Montage'");
 		ReloadMontage_PlayRate = 1.5f;
 		MagazineBoneName = NAME_None;
-		// CHelpers::GetClass<ACMagazine>(&MagazineClass, "Blueprint'/Game/Weapons/BP_CMagazine_Pistol.BP_CMagazine_Pistol_C'");
+		 CHelpers::GetClass<ACMagazine>(&MagazineClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/Magazines/BP_CMagazine_Pistol.BP_CMagazine_Pistol_C'");
 		MagazineSocketName = "Pistol_Magazine";
 	}
 

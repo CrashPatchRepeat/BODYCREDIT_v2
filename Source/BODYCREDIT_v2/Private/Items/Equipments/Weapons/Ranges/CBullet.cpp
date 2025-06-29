@@ -15,7 +15,7 @@ ACBullet::ACBullet()
 	Capsule->SetRelativeRotation(FRotator(90, 0, 0));
 	Capsule->SetCapsuleHalfHeight(50);
 	Capsule->SetCapsuleRadius(2);
-	Capsule->SetCollisionProfileName("BlockAllDynamic");
+	Capsule->SetCollisionProfileName("PlayerProjectile");
 
 	CHelpers::CreateComponent<UStaticMeshComponent>(this, &Mesh, "Mesh", Capsule);
 	Mesh->SetRelativeScale3D(FVector(1, 0.025f, 0.025f));
