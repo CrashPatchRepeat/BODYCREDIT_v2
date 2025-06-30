@@ -11,8 +11,9 @@ void UCWeaponComponent::SetupInputBindings(UEnhancedInputComponent* InEnhancedIn
 {
 	CheckNull(InEnhancedInputComponent);
 
-	InEnhancedInputComponent->BindAction(IA_WeaponSlot1, ETriggerEvent::Started, this, &UCWeaponComponent::SetAKMode);
-	InEnhancedInputComponent->BindAction(IA_WeaponSlot2, ETriggerEvent::Started, this, &UCWeaponComponent::SetMagnumMode);
+	InEnhancedInputComponent->BindAction(IA_WeaponSlot1, ETriggerEvent::Started, this, &UCWeaponComponent::SetM4Mode);
+	InEnhancedInputComponent->BindAction(IA_WeaponSlot2, ETriggerEvent::Started, this, &UCWeaponComponent::SetAKMode);
+	InEnhancedInputComponent->BindAction(IA_WeaponSlot3, ETriggerEvent::Started, this, &UCWeaponComponent::SetMagnumMode);
 
 	InEnhancedInputComponent->BindAction(IA_Action, ETriggerEvent::Started, this, &UCWeaponComponent::Begin_Fire);
 	InEnhancedInputComponent->BindAction(IA_Action, ETriggerEvent::Completed, this, &UCWeaponComponent::End_Fire);
@@ -220,6 +221,7 @@ UCWeaponComponent::UCWeaponComponent()
 
 	CHelpers::GetAsset(&IA_WeaponSlot1, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_WeaponSlot1.IA_WeaponSlot1'"));
 	CHelpers::GetAsset(&IA_WeaponSlot2, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_WeaponSlot2.IA_WeaponSlot2'"));
+	CHelpers::GetAsset(&IA_WeaponSlot3, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_WeaponSlot3.IA_WeaponSlot3'"));
 	
 	CHelpers::GetAsset(&IA_Action, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_Action.IA_Action'"));
 	CHelpers::GetAsset(&IA_SubAction, TEXT("/Script/EnhancedInput.InputAction'/Game/Inputs/IA_SubAction.IA_SubAction'"));
