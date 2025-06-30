@@ -1,4 +1,4 @@
-#include "Items/Equipments/Weapons/Ranges/CWeapon_Range.h"
+﻿#include "Items/Equipments/Weapons/Ranges/CWeapon_Range.h"
 #include "Global.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -9,6 +9,9 @@
 #include "GameFramework/PlayerController.h"
 #include "Items/Equipments/Weapons/Ranges/CMagazine.h"
 #include "Items/Equipments/Weapons/Ranges/CBullet.h"
+#include "Materials/MaterialInstanceConstant.h"
+#include "Components/DecalComponent.h"
+#include "Characters/CNox.h"
 
 void FWeaponAimData::SetData(ACNox* InOwner)
 {
@@ -218,16 +221,17 @@ void ACWeapon_Range::Spawn_Magazine()
 void ACWeapon_Range::Load_Magazine()
 {
 	CurrMagazineCount = MaxMagazineCount;
-	
 	if (MagazineBoneName.IsValid()) Mesh->UnHideBoneByName(MagazineBoneName);
-	
 	if (Magazine) Magazine->Destroy();
+	SyncSightAmmoCount();
 }
 
 void ACWeapon_Range::End_Reload()
 {
 	bReload = false;
 }
+
+void ACWeapon_Range::SyncSightAmmoCount() {}
 
 ACWeapon_Range::ACWeapon_Range()
 {
@@ -240,6 +244,9 @@ ACWeapon_Range::ACWeapon_Range()
 	CHelpers::GetAsset<UParticleSystem>(&FlashParticle, "/Script/Engine.ParticleSystem'/Game/Items/Equipments/Weapons/Ranges/Effects/P_Muzzleflash.P_Muzzleflash'");
 	CHelpers::GetAsset<UParticleSystem>(&EjectParticle, "/Script/Engine.ParticleSystem'/Game/Items/Equipments/Weapons/Ranges/Effects/P_Eject_bullet.P_Eject_bullet'");
 	CHelpers::GetClass<ACBullet>(&BulletClass, "/Script/Engine.Blueprint'/Game/Items/Equipments/Weapons/Ranges/Bullets/BP_CBullet.BP_CBullet_C'");
+
+	CHelpers::GetAsset<UMaterialInstanceConstant>(&HitDecal, "/Script/Engine.MaterialInstanceConstant'/Game/Items/Equipments/Weapons/Ranges/Effects/Materials/MI_Hit.MI_Hit'");
+
 }
 
 void ACWeapon_Range::Tick(float DeltaTime)
@@ -316,25 +323,31 @@ void ACWeapon_Range::OnFiring()
 	//DrawDebugLine(GetWorld(), start, end, FColor::Red, true, 5);
 
 	TArray<AActor*> ignores;
+	ignores.Add(this);
+	ignores.Add(this->OwnerCharacter);
 
 	FHitResult hitResult;
 	UKismetSystemLibrary::LineTraceSingle(GetWorld(), start, end, ETraceTypeQuery::TraceTypeQuery1, false, ignores, EDrawDebugTrace::None, hitResult, true);
 
 	if (hitResult.bBlockingHit)
 	{
-		// if (HitDecal)
-		// {
-		// 	FRotator rotator = hitResult.ImpactNormal.Rotation();
-		//
-		// 	UDecalComponent* decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(5), hitResult.Location, rotator, 10);
-		// 	decal->SetFadeScreenSize(0);
-		// }
+		ACNox* nox = Cast<ACNox>(hitResult.GetActor());
 
-		if (HitParticle)
+		if (!nox)
 		{
-			FRotator rotator = UKismetMathLibrary::FindLookAtRotation(hitResult.Location, hitResult.TraceStart);
+			if (HitDecal)
+			{
+				FRotator rotator = hitResult.ImpactNormal.Rotation();
+				UDecalComponent* decal = UGameplayStatics::SpawnDecalAtLocation(GetWorld(), HitDecal, FVector(5), hitResult.Location, rotator, 10);
+				decal->SetFadeScreenSize(0);
+			}
 
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, hitResult.Location, rotator);
+			if (HitParticle)
+			{
+				FRotator rotator = UKismetMathLibrary::FindLookAtRotation(hitResult.Location, hitResult.TraceStart);
+
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticle, hitResult.Location, rotator);
+			}
 		}
 	}
 
@@ -375,9 +388,10 @@ void ACWeapon_Range::OnFiring()
 		if (!!bullet) bullet->Shoot(direction);
 	}
 
-	if (CurrMagazineCount >= 1)
+	if (--CurrMagazineCount >= 1)
 	{
-		CurrMagazineCount--;
+		/*CurrMagazineCount;*/
+		SyncSightAmmoCount();
 	}
 	else
 	{

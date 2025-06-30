@@ -81,6 +81,19 @@ ACWeapon_Range_M4::ACWeapon_Range_M4()
 	}
 }
 
+void ACWeapon_Range_M4::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (SightMesh)
+	{
+		SightMID = SightMesh->CreateAndSetMaterialInstanceDynamic(0);
+
+		// 초기 탄약 상태 반영
+		SyncSightAmmoCount();
+	}
+}
+
 void ACWeapon_Range_M4::Begin_Equip()
 {
 	if (LeftHandSocketName.IsValid())
@@ -135,4 +148,32 @@ void ACWeapon_Range_M4::End_Aim()
 	CHelpers::AttachTo(this, OwnerCharacter->GetMesh(), RightHandSocketName);
 	
 	CHelpers::GetComponent<UCWeaponComponent>(OwnerCharacter)->OnWeaponAim_Arms_End.Broadcast();
+}
+
+// 발사 시 머티리얼 파라미터 동기화 추가
+void ACWeapon_Range_M4::OnFiring()
+{
+	Super::OnFiring();
+	
+	SyncSightAmmoCount();
+}
+
+void ACWeapon_Range_M4::SyncSightAmmoCount()
+{
+	if (SightMID)
+	{
+		// 원래 정규화: float phase = (float)CurrMagazineCount / MaxMagazineCount;
+		// 변경: 정규화 제거하고 실제 카운트 값 그대로 반영
+		float ammoCountValue = (float)CurrMagazineCount;
+		SightMID->SetScalarParameterValue(FName("Ammo Count"), ammoCountValue);
+
+		UE_LOG(LogTemp, Warning, TEXT("Ammo Count Set: %d"), CurrMagazineCount);
+	}
+}
+
+void ACWeapon_Range_M4::Load_Magazine()
+{
+	Super::Load_Magazine();
+	
+	SyncSightAmmoCount();
 }
